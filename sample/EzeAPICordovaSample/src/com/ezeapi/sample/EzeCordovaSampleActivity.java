@@ -17,13 +17,13 @@
        under the License.
  */
 
-package io.cordova.hellocordova;
+package com.ezeapi.sample;
 
 import org.apache.cordova.CordovaActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends CordovaActivity
+public class EzeCordovaSampleActivity extends CordovaActivity
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
