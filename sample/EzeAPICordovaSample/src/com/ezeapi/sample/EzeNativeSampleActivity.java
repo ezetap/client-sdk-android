@@ -235,10 +235,10 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 	private void initEzetap() {
 		JSONObject jsonRequest = new JSONObject();
 		try {
-			jsonRequest.put("demoAppKey","3a10bcf3-cfe6-4e9a-91ed-dab4c1616334");
-			jsonRequest.put("prodAppKey","3a10bcf3-cfe6-4e9a-91ed-dab4c1616334");
-			jsonRequest.put("merchantName","Pro Serv Sample App");
-			jsonRequest.put("username","Android Testing");
+			jsonRequest.put("demoAppKey","Enter your demo app key");
+			jsonRequest.put("prodAppKey","Enter your prod app key");
+			jsonRequest.put("merchantName","Merchant Name");
+			jsonRequest.put("userName","user name");
 			jsonRequest.put("currencyCode","INR");
 			jsonRequest.put("appMode","DEMO");
 			jsonRequest.put("captureSignature","false");

@@ -26,10 +26,10 @@ initBtn.onclick = function(){
 		$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 	};
 	var EzetapConfig = {
-			"demoAppKey":"3a10bcf3-cfe6-4e9a-91ed-dab4c1616334",
-			"prodAppKey":"3a10bcf3-cfe6-4e9a-91ed-dab4c1616334",	
-			"merchantName":"Ezetap PS",//The name of your organization
-			"userName":"cordova test",//Name of the user or agent
+			"demoAppKey":"Enter your demo app key here",
+			"prodAppKey":"Enter your prod app key here",	
+			"merchantName":"Merchant name",//The name of your organization
+			"userName":"User name",//Name of the user or agent
 			"currencyCode":"INR",//Defaulted to INR. Set to appropriate currency code your application uses.
 			"appMode":"DEMO",//Accepts the value DEMO, PROD and PREPROD
 			"captureSignature":"false",// Set it to TRUE if you wish Ezetap to capture signature			
