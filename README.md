@@ -3,8 +3,8 @@
 This section is meant for people who have existing android native/hybrid (Cordova) apps and would like to integrate Ezetap PoS solution through a native android SDK implementation.
 
 #######This documentation contains the instructions to integrate-
-1. Ezetap Native Android API
-2. Ezetap Cordova API 
+1. Ezetap Native Android SDK
+2. Ezetap Cordova SDK
 
 #1. Native Android Integration
 
@@ -20,10 +20,12 @@ If you have an Deploy-able Android Native Application this API will help you int
 ## Steps to follow-
 1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in libs folder of your Native Android Project.
 2. In the manifest file of your Android Project add a new Activity, which looks like this-
-    <activity android:name="com.eze.api.EzeAPIActivity"
+
+>    <activity android:name="com.eze.api.EzeAPIActivity"
         android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
         android:screenOrientation="portrait"
         android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        
 3. Good to go, please refer Ezetap API portal for API usage
 
 >Note- The EzeAPIActivity has to be configured with the same attributes as given above.
