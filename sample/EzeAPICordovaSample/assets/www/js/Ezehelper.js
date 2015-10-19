@@ -202,13 +202,6 @@ payBtnCash.onclick = function(){
 			$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 		};
 
-		var Payment = {
-				"orderNumber":refNum,
-				"tip":"0",
-				"userName":$("#name").val(),
-				"mobileNumber":$("#mobile").val()
-		};
-
 		var Request = {
 				"amount": amount,
 				"agentName": "Demo User",
@@ -294,7 +287,7 @@ btnAttachSignature.onclick = function(){
 				"imageType": "PNG",
 				"height": "",
 				"weight": ""
-			}*/	
+			}*/
 	};
 	if(transactionID == "" || transactionID == undefined || transactionID == null)
 		alert("Unable to find transaction ID, please make a transaction.");
