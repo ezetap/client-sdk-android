@@ -31,12 +31,12 @@ There is a sample Android App inside the sample folder of the repository. You ca
 ## Steps to follow-
 1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in <a href="https://github.com/ezetap/client-sdk-android/tree/master/release">libs/</a> folder of your Native Android Project.
 2. In the manifest file of your Android Project add a new Activity, which looks like this-
-	```xml
+```xml
 		<activity android:name="com.eze.api.EzeAPIActivity"
 	        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
 	        android:screenOrientation="portrait"
 	        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-	```
+```
 3. Good to go, please refer Ezetap API portal for API usage
 
 >Note- The EzeAPIActivity has to be configured with the same attributes as given above.
@@ -67,11 +67,11 @@ There is a sample Android App inside the sample folder of the repository. You ca
 ## Steps to follow-
 1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in <a href="https://github.com/ezetap/client-sdk-android/tree/master/release">libs/</a> folder of your Cordova Android Project.
 2. In res>xml>config.xml add a new plugin, which looks like this-
-	```xml
+```xml
 	    <feature name="EzeAPIPlugin">
 	        <param name="android-package" value="com.eze.api.EzeAPIPlugin" />
 	    </feature>
-	```
+```
 3. In the manifest file of your Cordova Android Project add a new Activity, which looks like this-
 ```xml
     <activity android:name="com.eze.api.EzeAPIActivity"
