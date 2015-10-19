@@ -2,7 +2,7 @@
 
 This section is meant for people who have existing android native/hybrid (Cordova) apps and would like to integrate Ezetap PoS solution through a native android SDK implementation.
 
-#######This documentation contains the instructions to integrate-
+######This documentation contains the instructions to integrate-
 1. Ezetap Native Android SDK
 2. Ezetap Cordova SDK
 
@@ -17,19 +17,6 @@ If you have an Deploy-able Android Native Application this API will help you int
 4. Ezetap app key or login credentials to Ezetap service
 5. Ezetap device to test
 
-## Steps to follow-
-1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in libs folder of your Native Android Project.
-2. In the manifest file of your Android Project add a new Activity, which looks like this-
-
->    <activity android:name="com.eze.api.EzeAPIActivity"
-        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-        android:screenOrientation="portrait"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-        
-3. Good to go, please refer Ezetap API portal for API usage
-
->Note- The EzeAPIActivity has to be configured with the same attributes as given above.
-
 ##Sample App
 There is a sample Android App inside the sample folder of the repository. You can use this project as a reference to integrate Ezetap SDK.
 
@@ -40,6 +27,19 @@ There is a sample Android App inside the sample folder of the repository. You ca
 4. EzeNativeSampleActivity.java will be your point of reference for Native Android SDK integration
 
 >Note- The errors you may face while importing the project will most likely be for Android version mismatch which EclipseIDE would normally resolve itself. Changing the Android version or restarting the Eclipse can help u solve this problem
+
+## Steps to follow-
+1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in libs folder of your Native Android Project.
+2. In the manifest file of your Android Project add a new Activity, which looks like this-
+```xml
+	<activity android:name="com.eze.api.EzeAPIActivity"
+        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+```        
+3. Good to go, please refer Ezetap API portal for API usage
+
+>Note- The EzeAPIActivity has to be configured with the same attributes as given above.
 
 #2. Cordova Integration
 
@@ -53,21 +53,6 @@ If you have an Deploy-able Android Hybrid Application built on Cordova platform,
 5. Ezetap app key or login credentials to Ezetap service
 6. Ezetap device to test
 
-## Steps to follow-
-1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in libs folder of your Cordova Android Project.
-2. In res>xml>config.xml add a new plugin, which looks like this-
-    <feature name="EzeAPIPlugin">
-        <param name="android-package" value="com.eze.api.EzeAPIPlugin" />
-    </feature>
-3. In the manifest file of your Cordova Android Project add a new Activity, which looks like this-
-    <activity android:name="com.eze.api.EzeAPIActivity"
-        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-        android:screenOrientation="portrait"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-4. Good to go, please refer Ezetap API portal for API usage
-
->Note- The Ezetap Cordova Plugin and the EzeAPIActivity has to be configured with the same attributes as given above.
-
 ##Sample App
 There is a sample Android App inside the sample folder of the repository. You can use this project as a reference to integrate Ezetap SDK.
 
@@ -78,3 +63,24 @@ There is a sample Android App inside the sample folder of the repository. You ca
 4. Ezehelper.js will be your point of reference for Cordova Android SDK integration
 
 >Note- The errors you may face while importing the project will most likely be for Android version mismatch which EclipseIDE would normally resolve itself. Changing the Android version or restarting the Eclipse can help u solve this problem
+
+## Steps to follow-
+1. You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in libs folder of your Cordova Android Project.
+2. In res>xml>config.xml add a new plugin, which looks like this-
+```xml
+    <feature name="EzeAPIPlugin">
+        <param name="android-package" value="com.eze.api.EzeAPIPlugin" />
+    </feature>
+```
+3. In the manifest file of your Cordova Android Project add a new Activity, which looks like this-
+
+```xml
+    <activity android:name="com.eze.api.EzeAPIActivity"
+        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+```
+4. Good to go, please refer Ezetap API portal for API usage
+
+>Note- The Ezetap Cordova Plugin and the EzeAPIActivity has to be configured with the same attributes as given above.
+
