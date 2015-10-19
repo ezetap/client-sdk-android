@@ -217,7 +217,6 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 
 				//Building final request object
 				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("agentName", "Demo User");
 				jsonRequest.put("mode", "SALE");//This attributes determines the type of transaction
 				jsonRequest.put("options", jsonOptionalParams);
 
@@ -237,8 +236,9 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 		JSONObject jsonRequest = new JSONObject();
 		try {
 			jsonRequest.put("demoAppKey","3a10bcf3-cfe6-4e9a-91ed-dab4c1616334");
-			jsonRequest.put("prodAppKey","3a10bcf3-cfe6-4e9a-91ed-dab4c1616334");	
+			jsonRequest.put("prodAppKey","3a10bcf3-cfe6-4e9a-91ed-dab4c1616334");
 			jsonRequest.put("merchantName","Pro Serv Sample App");
+			jsonRequest.put("username","Android Testing");
 			jsonRequest.put("currencyCode","INR");
 			jsonRequest.put("appMode","DEMO");
 			jsonRequest.put("captureSignature","false");
@@ -275,7 +275,6 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 
 				//Building final request object
 				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("agentName", "Demo User");
 				jsonRequest.put("options", jsonOptionalParams);
 
 				EzeAPI.cashTransaction(this, REQUESTCODE_CASH, jsonRequest);
@@ -309,7 +308,6 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 
 				//Building final request object
 				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("agentName", "Demo User");
 				jsonRequest.put("mode", "CASHBACK");//This attributes determines the type of transaction
 				jsonRequest.put("options", jsonOptionalParams);
 
@@ -344,7 +342,6 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 
 				//Building final request object
 				jsonRequest.put("amount", 0.00);//Cannot have amount for CASH@POS transaction.
-				jsonRequest.put("agentName", "Demo User");
 				jsonRequest.put("mode", "CASH@POS");//This attributes determines the type of transaction
 				jsonRequest.put("options", jsonOptionalParams);
 

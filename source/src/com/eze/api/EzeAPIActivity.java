@@ -259,7 +259,7 @@ public class EzeAPIActivity extends Activity{
 	private void initializeUser(JSONArray args){
 		LoginAuthMode authMode = null;
 		boolean captureSignatureBool = false;
-		String appKey=null,merchantName=null,currencyCode=null,ezetapUserName=null,captureSignature=null;
+		String appKey=null,merchantName=null,userName=null,currencyCode=null,captureSignature=null,prodAppKey=null;
 		AppMode appMode = null;
 		CommunicationChannel communicationChannel = null;
 		JSONObject jsonConfigData = null;
@@ -276,6 +276,22 @@ public class EzeAPIActivity extends Activity{
 				try {
 					appKey = jsonConfigData.getString("demoAppKey");
 					if("".equalsIgnoreCase(appKey) || appKey==null){
+						ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+						return;
+					}
+				} catch (Exception e) {
+					ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+					return;
+				}
+			}else{
+				ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+				return;
+			}
+			
+			if(jsonConfigData.has("prodAppKey")){
+				try {
+					prodAppKey = jsonConfigData.getString("prodAppKey");
+					if("".equalsIgnoreCase(prodAppKey) || prodAppKey==null){
 						ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 						return;
 					}
@@ -304,6 +320,24 @@ public class EzeAPIActivity extends Activity{
 				return;
 			}
 
+			if(jsonConfigData.has("userName")){
+				try {
+					userName = jsonConfigData.getString("userName");
+					if("".equalsIgnoreCase(userName) || userName==null){
+						ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+						return;
+					}else{
+						EzetapUserConfig.setUserName(userName);
+					}
+				} catch (Exception e) {
+					ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+					return;
+				}
+			}else{
+				ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
+				return;
+			}
+			
 			if(jsonConfigData.has("currencyCode")){
 				try {
 					currencyCode = jsonConfigData.getString("currencyCode");
@@ -383,10 +417,7 @@ public class EzeAPIActivity extends Activity{
 				communicationChannel = CommunicationChannel.NONE;
 			}
 
-			ezetapUserName=EzetapUserConfig.getUserName();
-
 			EzetapUserConfig.setEzeUserConfig(new EzetapApiConfig(authMode, appKey, merchantName, currencyCode, appMode, captureSignatureBool, communicationChannel));
-			EzetapUserConfig.setUserName(ezetapUserName);
 			initiateDevice(args);
 		}else{
 			ezetapSuccessCallBack("{\"message\":\"Device instantiated!\"}");
@@ -441,12 +472,10 @@ public class EzeAPIActivity extends Activity{
 	 * 					- Arguments to the Ezetap API, as passed from JS
 	 * */
 	private void initiateCashPayment(JSONArray pluginArgs){
-		String userName = null;
 		Double amount = null;
 		JSONObject jsonObject = null;
 		try{
 			jsonObject = new JSONObject(pluginArgs.get(0).toString());
-			userName = getUserName(jsonObject);
 			amount = getAmount(jsonObject);
 		} catch (Exception e) {
 			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
@@ -456,7 +485,7 @@ public class EzeAPIActivity extends Activity{
 		.startCashPayment(
 				this,
 				AppConstants.REQ_CODE_PAY_CASH,
-				userName,
+				EzetapUserConfig.getUserName(),
 				amount,
 				getOrderNumber(jsonObject),
 				0.0,//Tip
@@ -485,14 +514,12 @@ public class EzeAPIActivity extends Activity{
 	 * 					- Arguments to the Ezetap API, as passed from JS
 	 * */
 	private void initiateCardPayment(JSONArray pluginArgs){
-		String userName = null;
 		Double amount = null;
 		String paymentMode = null;
 		Double payBackAmount = null;
 		JSONObject jsonObject = null;
 		try{
 			jsonObject = new JSONObject(pluginArgs.get(0).toString());
-			userName = getUserName(jsonObject);
 			amount = getAmount(jsonObject);
 			paymentMode = getPaymentMode(jsonObject);
 			payBackAmount = getAmountCashBack(jsonObject);
@@ -500,7 +527,7 @@ public class EzeAPIActivity extends Activity{
 			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
 			return;
 		}
-		if(userName==null || isAmountInvalid(amount,payBackAmount,paymentMode) || paymentMode==null){
+		if(isAmountInvalid(amount,payBackAmount,paymentMode) || paymentMode==null){
 			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 		}else{
 			if("SALE".equalsIgnoreCase(paymentMode)){
@@ -518,7 +545,7 @@ public class EzeAPIActivity extends Activity{
 				.startCardPayment(
 						this,
 						AppConstants.REQ_CODE_PAY_CARD,
-						userName, 
+						EzetapUserConfig.getUserName(), 
 						amount,
 						payBackAmount,
 						getOrderNumber(jsonObject),
@@ -888,24 +915,6 @@ public class EzeAPIActivity extends Activity{
 			return null;				
 		}
 
-	}
-
-	/**
-	 * Method to return the user name from the takePayment arguments 
-	 * @param JSONObject jsonParams
-	 * 					- The request object as passed from JS
-	 * */
-	private String getUserName(JSONObject jsonParams) throws Exception{
-		String uname = null;
-		if(jsonParams.has("agentName")){
-			uname = jsonParams.get("agentName").toString();
-			if("".equalsIgnoreCase(uname))
-				return null;
-			else
-				return uname;
-		}else{
-			return null;
-		}
 	}
 
 	/**

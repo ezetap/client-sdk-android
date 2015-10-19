@@ -19,7 +19,7 @@ public class EzetapUserConfig {
 	/**
 	 * Variable used to save user name once the initialize is successful
 	 * */
-	private static String userName="user";
+	private static String userName=null;
 
 	private EzetapUserConfig(){}
 	

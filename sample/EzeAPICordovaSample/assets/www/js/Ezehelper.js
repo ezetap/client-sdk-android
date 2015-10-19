@@ -26,9 +26,10 @@ initBtn.onclick = function(){
 		$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 	};
 	var EzetapConfig = {
-			"demoAppKey":"",
-			"prodAppKey":"",	
-			"merchantName":"",//The name of your organization
+			"demoAppKey":"3a10bcf3-cfe6-4e9a-91ed-dab4c1616334",
+			"prodAppKey":"3a10bcf3-cfe6-4e9a-91ed-dab4c1616334",	
+			"merchantName":"Ezetap PS",//The name of your organization
+			"userName":"cordova test",//Name of the user or agent
 			"currencyCode":"INR",//Defaulted to INR. Set to appropriate currency code your application uses.
 			"appMode":"DEMO",//Accepts the value DEMO, PROD and PREPROD
 			"captureSignature":"false",// Set it to TRUE if you wish Ezetap to capture signature			
@@ -81,7 +82,6 @@ payBtnCashAtPOS.onclick = function(){
 
 		var Request = {
 				"amount": 0.00,
-				"agentName": "Demo User",
 				"mode": "CASH@POS",
 				"options": {
 					"amountCashback": amount,
@@ -122,7 +122,6 @@ payBtnCashback.onclick = function(){
 
 		var Request = {
 				"amount": amount,
-				"agentName": "Demo User",
 				"mode": "CASHBACK",
 				"options": {
 					"amountCashback": amountCashback,
@@ -163,7 +162,6 @@ payBtn.onclick = function(){
 
 		var Request = {
 				"amount": amount,
-				"agentName": "Demo User",
 				"mode": "SALE",
 				"options": {
 					"amountCashback": 0.0,
@@ -204,7 +202,6 @@ payBtnCash.onclick = function(){
 
 		var Request = {
 				"amount": amount,
-				"agentName": "Demo User",
 				"options": {
 					"references": {
 						"reference1":"PS123"
