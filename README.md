@@ -37,7 +37,6 @@ There is a sample Android App inside the sample folder of the repository. You ca
 	        android:screenOrientation="portrait"
 	        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 ```
-
 3. Good to go, please refer Ezetap API portal for API usage
 
 >Note- The EzeAPIActivity has to be configured with the same attributes as given above.
@@ -73,7 +72,6 @@ There is a sample Android App inside the sample folder of the repository. You ca
 	        <param name="android-package" value="com.eze.api.EzeAPIPlugin" />
 	    </feature>
 ```
-
 3. In the manifest file of your Cordova Android Project add a new Activity, which looks like this-
 ```xml
     <activity android:name="com.eze.api.EzeAPIActivity"
@@ -81,7 +79,6 @@ There is a sample Android App inside the sample folder of the repository. You ca
         android:screenOrientation="portrait"
         android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 ```
-
 4. Good to go, please refer Ezetap API portal for API usage
 
 >Note- The Ezetap Cordova Plugin and the EzeAPIActivity has to be configured with the same attributes as given above.
