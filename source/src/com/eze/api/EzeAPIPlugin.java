@@ -18,15 +18,17 @@ import com.eze.api.EzeAPIConstants.EzetapErrors;
 import com.ezetap.sdk.AppConstants;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.widget.Toast;
 
 public class EzeAPIPlugin extends CordovaPlugin {
-	
+
 	/**
 	 * Variable to save the context of the Cordova Plugin
 	 * */
 	private CallbackContext callbackCtxt;
-	
+
 	/**
 	 * Request code used to communicate with EzeAPIActivity
 	 * */
@@ -59,13 +61,17 @@ public class EzeAPIPlugin extends CordovaPlugin {
 	 * 					- Arguments to the Ezetap API, as passed from JS
 	 * */
 	private void delegateRequest(String api,String params) {
-		AppConstants.APP_ID = "SDK_AND_COR";
-		AppConstants.APP_NAME = "Android Cordova SDK";
-		Intent intent = new Intent();
-		intent.setClass(cordova.getActivity(),EzeAPIActivity.class);
-		intent.setAction(api);
-		intent.putExtra("params", params);
-		cordova.startActivityForResult(this, intent, EZE_REQUESTCODE);
+		try {
+			AppConstants.APP_ID = "SDK_AND_COR";
+			AppConstants.APP_NAME = "Android Cordova SDK";
+			Intent intent = new Intent();
+			intent.setClass(cordova.getActivity(),EzeAPIActivity.class);
+			intent.setAction(api);
+			intent.putExtra("params", params);
+			cordova.startActivityForResult(this, intent, EZE_REQUESTCODE);
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(cordova.getActivity(), "Looks like you have not defined EzeAPIActivity in your Manifest file.", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**

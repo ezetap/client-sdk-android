@@ -9,22 +9,22 @@ package com.eze.api;
 
 public class EzeAPIConstants {
 	public enum EzetapErrors {		
-		ERROR_INIT_REQUIRED("EZETAP_323020","Device not initialized, call INITIALIZE API."),
-		ERROR_API_CHEQUE("EZETAP_323021","Cheque payment API is not supported in this version of SDK."),
-		ERROR_API_SENDRECEIPT("EZETAP_323022","Send Receipt is not supported in this version of SDK."),
-		ERROR_MISSING_MANDATORYPARAMS("EZETAP_323023","Mandatory parameters are missing."),
-		ERROR_DEFAULT_INIT("EZETAP_323024","Exception occurred in INITIALIZE API."),
-		ERROR_DEFAULT_SENDRECEIPT("EZETAP_323025","Exception occurred in SEND RECEIPT API."),
-		ERROR_DEFAULT_TAKEPAYMENT("EZETAP_323026","Exception occurred in TAKE PAYMENT API."),
-		ERROR_DEFAULT_TRANSHISTORY("EZETAP_323027","Exception occurred in TRANSACTION HISTORY API."),
-		ERROR_DEFAULT_TRANSACTIONDETAIL("EZETAP_323028","Exception occurred in TRANACTION DETAIL API."),
-		ERROR_DEFAULT_ATTACHSIGNATURE("EZETAP_323029","Exception occurred in ATTACH SIGNATURE API."),
-		ERROR_DEFAULT_VOIDTRANSACTION("EZETAP_323030","Exception occurred in VOID TRANSACTION API."),
-		ERROR_DEFAULT_LOGOUT("EZETAP_323031","Exception occurred in LOGOUT API."),
-		ERROR_API_GETTRANSACTIONDETAIL("EZETAP_323032","GetTransactionDetail API is not supported in this version of SDK."),
-		ERROR_DEFAULT_GETTRANSACTIONDETAIL("EZETAP_323033","Error occurred in GET TRANSACTIONDETAIL API."),
-		ERROR_API_WALLETPAYMENT("EZETAP_323034","Wallet payment is not supported in this version of SDK."),
-		ERROR_DEFAULT_WALLETPAYMENT("EZETAP_323034","Error occurred in WALLET PAYMENT API.");
+		ERROR_INIT_REQUIRED("EZECLI_323020","Device not initialized, call INITIALIZE API."),
+		ERROR_API_CHEQUE("EZECLI_323021","Cheque payment API is not supported in this version of SDK."),
+		ERROR_API_SENDRECEIPT("EZECLI_323022","Send Receipt is not supported in this version of SDK."),
+		ERROR_MISSING_MANDATORYPARAMS("EZECLI_323023","Mandatory parameters are missing."),
+		ERROR_DEFAULT_INIT("EZECLI_323024","Exception occurred in INITIALIZE API."),
+		ERROR_DEFAULT_SENDRECEIPT("EZECLI_323025","Exception occurred in SEND RECEIPT API."),
+		ERROR_DEFAULT_TAKEPAYMENT("EZECLI_323026","Exception occurred in TAKE PAYMENT API."),
+		ERROR_DEFAULT_TRANSHISTORY("EZECLI_323027","Exception occurred in TRANSACTION HISTORY API."),
+		ERROR_DEFAULT_TRANSACTIONDETAIL("EZECLI_323028","Exception occurred in TRANACTION DETAIL API."),
+		ERROR_DEFAULT_ATTACHSIGNATURE("EZECLI_323029","Exception occurred in ATTACH SIGNATURE API."),
+		ERROR_DEFAULT_VOIDTRANSACTION("EZECLI_323030","Exception occurred in VOID TRANSACTION API."),
+		ERROR_DEFAULT_LOGOUT("EZECLI_323031","Exception occurred in LOGOUT API."),
+		ERROR_API_GETTRANSACTIONDETAIL("EZECLI_323032","GetTransactionDetail API is not supported in this version of SDK."),
+		ERROR_DEFAULT_GETTRANSACTIONDETAIL("EZECLI_323033","Error occurred in GET TRANSACTIONDETAIL API."),
+		ERROR_API_WALLETPAYMENT("EZECLI_323034","Wallet payment is not supported in this version of SDK."),
+		ERROR_DEFAULT_WALLETPAYMENT("EZECLI_323034","Error occurred in WALLET PAYMENT API.");
 		
 		private final String ERRORCODE,ERRORMESSAGE;
 		EzetapErrors(String mERRORCODE,String mERRORMESSAGE) { 
