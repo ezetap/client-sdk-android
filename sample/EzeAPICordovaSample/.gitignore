@@ -13,3 +13,4 @@ out
 # Gradle builds
 /build
 /bin/
+/.project
