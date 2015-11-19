@@ -30,6 +30,10 @@ There is a sample Android App inside the sample folder of the repository. You ca
 
 ## Steps to follow-
 * You can find EzeAPI jar file in the releases folder of this repository, Add the jar file in <a href="https://github.com/ezetap/client-sdk-android/tree/master/release">libs</a> folder of your Native Android Project.
+* In the manifest file of your project add the permission WRITE_EXTERNAL_STORAGE, which looks like this-
+```xml
+	    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
 * In the manifest file of your Android Project add a new Activity, which looks like this-
 ```xml
 		<activity android:name="com.eze.api.EzeAPIActivity"
@@ -71,6 +75,10 @@ There is a sample Android App inside the sample folder of the repository. You ca
 	    <feature name="EzeAPIPlugin">
 	        <param name="android-package" value="com.eze.api.EzeAPIPlugin" />
 	    </feature>
+```
+* In the manifest file of your project add the permission WRITE_EXTERNAL_STORAGE, which looks like this-
+```xml
+	    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
 * In the manifest file of your Cordova Android Project add a new Activity, which looks like this-
 ```xml
