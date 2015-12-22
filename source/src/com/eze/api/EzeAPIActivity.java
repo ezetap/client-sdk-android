@@ -478,7 +478,7 @@ public class EzeAPIActivity extends Activity{
 			jsonObject = new JSONObject(pluginArgs.get(0).toString());
 			amount = getAmount(jsonObject);
 		} catch (Exception e) {
-			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 			return;
 		}
 		EzetapPayApis.create(EzetapUserConfig.getEzeUserConfig())
@@ -524,7 +524,7 @@ public class EzeAPIActivity extends Activity{
 			paymentMode = getPaymentMode(jsonObject);
 			payBackAmount = getAmountCashBack(jsonObject);
 		} catch (Exception e) {
-			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 			return;
 		}
 		if(isAmountInvalid(amount,payBackAmount,paymentMode) || paymentMode==null){
@@ -556,7 +556,7 @@ public class EzeAPIActivity extends Activity{
 						getExternalReference2(jsonObject),
 						new Hashtable<String, Object>());
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
 			}
 		}
 	}
@@ -607,7 +607,7 @@ public class EzeAPIActivity extends Activity{
 		try {
 			strPwd = new JSONObject(pluginArgs.get(0).toString()).getString("password");
 		} catch (Exception e) {
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(), EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(), EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 		}
 		if(strPwd==null)
 			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(), EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
@@ -634,7 +634,7 @@ public class EzeAPIActivity extends Activity{
 			jsonObject = new JSONObject(pluginArgumemnts.get(0).toString());
 			transID = getTransactionID(jsonObject);
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(), EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(), EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 			return;
 		}
 		if(transID!=null){
@@ -683,12 +683,12 @@ public class EzeAPIActivity extends Activity{
 				try {
 					emiID = getEmiID(jsonObject);
 				} catch (Throwable e) {
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(), EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage()+e.getMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(), EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
 				}
 				try {
 					imageBmp = getImageBitmap(jsonObject);
 				} catch (Throwable e) {
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(), EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage()+e.getMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(), EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
 				}
 				if(emiID==null)
 					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(), EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
@@ -736,7 +736,7 @@ public class EzeAPIActivity extends Activity{
 			jsonObject = new JSONObject(pluginArgs.get(0).toString());
 			userName = getUserNameForTransHistory(jsonObject);
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 			return;			
 		}
 		if(userName==null){
@@ -764,7 +764,7 @@ public class EzeAPIActivity extends Activity{
 		try {
 			transID = pluginArgs.get(0).toString();
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(), EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(), EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage());
 			return;
 		}
 		if(transID!=null){
@@ -777,7 +777,7 @@ public class EzeAPIActivity extends Activity{
 						transID);
 			}
 			catch(Exception e){
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(), EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(), EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage());
 			}
 		}
 	}
@@ -793,7 +793,7 @@ public class EzeAPIActivity extends Activity{
 					AppConstants.REQ_CODE_LOGOUT, 
 					EzetapUserConfig.getUserName());
 		} catch (Exception e) {
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorMessage());
 		}
 	}
 
@@ -831,7 +831,7 @@ public class EzeAPIActivity extends Activity{
 				EzetapUserConfig.setUserName(null);
 			}
 		} catch (Exception e) {
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 		}
 	}
 
@@ -869,7 +869,7 @@ public class EzeAPIActivity extends Activity{
 			if(jsonParams.has("options")){
 				JSONObject jsonOptions = new JSONObject(jsonParams.get("options").toString());
 				if(jsonOptions.has("references")){
-					JSONObject jsonReferences = new JSONObject(jsonParams.get("references").toString());
+					JSONObject jsonReferences = new JSONObject(jsonOptions.get("references").toString());
 					if(jsonReferences.has("reference3")){
 						String orderNum = jsonReferences.get("reference3").toString();
 						if("".equalsIgnoreCase(orderNum))
@@ -898,7 +898,7 @@ public class EzeAPIActivity extends Activity{
 			if(jsonParams.has("options")){
 				JSONObject jsonOptions = new JSONObject(jsonParams.get("options").toString());
 				if(jsonOptions.has("references")){
-					JSONObject jsonReferences = new JSONObject(jsonParams.get("references").toString());
+					JSONObject jsonReferences = new JSONObject(jsonOptions.get("references").toString());
 					if(jsonReferences.has("reference2")){
 						String orderNum = jsonReferences.get("reference2").toString();
 						if("".equalsIgnoreCase(orderNum))
@@ -979,7 +979,7 @@ public class EzeAPIActivity extends Activity{
 			if(jsonParams.has("options")){
 				JSONObject jsonOptions = new JSONObject(jsonParams.get("options").toString());
 				if(jsonOptions.has("references")){
-					JSONObject jsonReferences = new JSONObject(jsonParams.get("references").toString());
+					JSONObject jsonReferences = new JSONObject(jsonOptions.get("references").toString());
 					if(jsonReferences.has("reference1")){
 						String orderNum = jsonReferences.get("reference1").toString();
 						if("".equalsIgnoreCase(orderNum))
@@ -1064,7 +1064,7 @@ public class EzeAPIActivity extends Activity{
 				JSONObject jsonOptions = new JSONObject(jsonParams.get("options").toString());
 				if(jsonOptions.has("customer")){
 					JSONObject jsonCustomer = new JSONObject(jsonOptions.get("customer").toString());
-					if(jsonCustomer.has("mobileNo")){
+					if(jsonCustomer.has("email")){
 						String email = jsonCustomer.get("email").toString();
 						if("".equalsIgnoreCase(email))
 							return null;
@@ -1286,13 +1286,13 @@ public class EzeAPIActivity extends Activity{
 								aJson.get(EzeConstants.KEY_ERROR_MESSAGE).toString());
 					}
 				} catch (Exception e) {
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorMessage()+e.getMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorMessage());
 
 				}
 				break;
 			}
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TRANSHISTORY.getErrorMessage());
 		}
 	}
 
@@ -1311,7 +1311,7 @@ public class EzeAPIActivity extends Activity{
 				jsonResult.put("message", "Attach e-signature successful.");
 				ezetapSuccessCallBack(jsonResult.toString());
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(),EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(),EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
 			}
 			break;
 
@@ -1325,7 +1325,7 @@ public class EzeAPIActivity extends Activity{
 					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(),EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
 				}
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(),EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorCode(),EzetapErrors.ERROR_DEFAULT_ATTACHSIGNATURE.getErrorMessage());
 			}
 			break;
 		}
@@ -1356,7 +1356,7 @@ public class EzeAPIActivity extends Activity{
 					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorMessage());
 				}
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_LOGOUT.getErrorMessage());
 			}
 			break;
 		}
@@ -1391,7 +1391,7 @@ public class EzeAPIActivity extends Activity{
 					ezetapErrorCallBack(aJson.get(EzeConstants.KEY_ERROR_CODE).toString(), aJson.get(EzeConstants.KEY_ERROR_MESSAGE).toString());
 				}
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 			}
 			break;
 		}
@@ -1410,7 +1410,7 @@ public class EzeAPIActivity extends Activity{
 			try {
 				ezetapSuccessCallBack("{\"message\":\"Transaction voided.\"}");
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(),EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(),EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage());
 			}
 			break;
 
@@ -1424,7 +1424,7 @@ public class EzeAPIActivity extends Activity{
 					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(),EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage());
 				}
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(),EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorCode(),EzetapErrors.ERROR_DEFAULT_VOIDTRANSACTION.getErrorMessage());
 			}
 			break;
 		}
@@ -1458,12 +1458,12 @@ public class EzeAPIActivity extends Activity{
 						ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 					}
 				} catch (Exception e) {
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 				}
 				break;
 			}
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 		}
 	}
 
@@ -1508,7 +1508,7 @@ public class EzeAPIActivity extends Activity{
 				break;
 			}
 		}catch(Exception e){
-			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage()+e.getMessage());
+			ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_INIT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_INIT.getErrorMessage());
 		}
 	}
 
@@ -1531,21 +1531,21 @@ public class EzeAPIActivity extends Activity{
 				jsonResult.put("cardDetails", returnCardObject(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
 				ezetapSuccessCallBack(jsonResult.toString());
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
 			}
 			break;
 
 		case EzeConstants.RESULT_FAILED:
 		default:
 			try {
-				if(data!=null){
+				if(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)!=null){
 					JSONObject aJson = new JSONObject(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
 					ezetapErrorCallBack(aJson.getString(EzeConstants.KEY_ERROR_CODE), aJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
 				}else{
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_CANCEL_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_CANCEL_TAKEPAYMENT.getErrorMessage());
 				}
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
 			}
 			break;
 		}
@@ -1568,18 +1568,18 @@ public class EzeAPIActivity extends Activity{
 				jsonResult.put("receipt", returnReceiptObject(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
 				ezetapSuccessCallBack(jsonResult.toString());
 			} catch (Exception e) {
-				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage()+e.getMessage());
+				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
 			}
 			break;
 
 		case EzeConstants.RESULT_FAILED:
 		default:
 			try {
-				if(data!=null){
+				if(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)!=null){
 					JSONObject aJson = new JSONObject(data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
 					ezetapErrorCallBack(aJson.get(EzeConstants.KEY_ERROR_CODE).toString(), aJson.get(EzeConstants.KEY_ERROR_MESSAGE).toString());
 				}else{
-					ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
+					ezetapErrorCallBack(EzetapErrors.ERROR_CANCEL_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_CANCEL_TAKEPAYMENT.getErrorMessage());
 				}
 			} catch (Exception e) {
 				ezetapErrorCallBack(EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorMessage());
@@ -1710,15 +1710,15 @@ public class EzeAPIActivity extends Activity{
 		JSONObject jsonErrorObj = new JSONObject();
 		JSONObject jsonResponse = new JSONObject();
 		try{
-			jsonErrorObj.put("ERROR_CODE", errorCode);
-			jsonErrorObj.put("ERROR_MESSAGE", errorMessage);
+			jsonErrorObj.put("code", errorCode);
+			jsonErrorObj.put("message", errorMessage);
 			jsonResponse.put("error", jsonErrorObj);
 			jsonResponse.put("status", "fail");
 			jsonResponse.put("result", "");
 			intent.putExtra("response", jsonResponse.toString());
 		}catch(Exception ex){
-			intent.putExtra("response","{\"status\":\"fail\",\"result\":null,\"error\":{\"ERROR_CODE\":\""+EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode()
-			+ "\",\"ERROR_MESSAGE\":\""+EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()
+			intent.putExtra("response","{\"status\":\"fail\",\"result\":null,\"error\":{\"code\":\""+EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode()
+			+ "\",\"message\":\""+EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorMessage()
 			+ "\"}}");
 		}
 		setResult(Activity.RESULT_CANCELED, intent);
