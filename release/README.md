@@ -9,9 +9,9 @@ Initial release version of Cordova Android SDK.
 This version of the SDK fixes the "external reference" issue. In the earlier version, if references::reference[1,2,3] fields were passed from the SDK, it was not reaching the server. This release fixes that issue. If you are using the earlier version of the SDK, please upgrade to the new version to have this issue resolved.
 
 
-## Version 1.0.2
+## Version 1.0.3
 
-This version of the SDK adds the below features-
+#####This version of the SDK adds the below features-
 	1. Android 6.0 Marshmallow Support.
 	2. Added the references object in all the payment responses. 
 	
