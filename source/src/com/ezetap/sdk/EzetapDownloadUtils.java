@@ -30,7 +30,6 @@ public class EzetapDownloadUtils {
 	ProgressDialog dialog;
 	boolean bCancelled = false;
 
-	Handler.Callback callingActivity;
 	String downloadedFilePath = null;
 	final String url;
 	private Activity currentActivity;
@@ -42,14 +41,12 @@ public class EzetapDownloadUtils {
 		this.currentActivity = context;
 	}
 
-	public EzetapDownloadUtils(String url, Activity context, String fileName, Handler.Callback handler) {
+	public EzetapDownloadUtils(String url, Activity context, String fileName) {
 		this.url = url;
 		this.currentActivity = context;
 		if (fileName == null)
 			fileName = "Ezetap";
 		this.appFileName = fileName;
-		this.callingActivity = handler;
-
 	}
 
 	public void start() {
@@ -173,12 +170,13 @@ public class EzetapDownloadUtils {
 							errorDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialogInterface, int i) {
+									notifyStatus(EzeConstants.RESULT_DOWNLOAD_FAILURE);
 								}
 							});
 							errorDialog.show();
 						}
 					});
-				}catch (final Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 					bCancelled = true;
 					if (dialog != null)
@@ -195,6 +193,7 @@ public class EzetapDownloadUtils {
 							errorDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialogInterface, int i) {
+									notifyStatus(EzeConstants.RESULT_DOWNLOAD_FAILURE);
 								}
 							});
 							errorDialog.show();
@@ -220,14 +219,16 @@ public class EzetapDownloadUtils {
 				dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				dialog.setTitle("Downloading");
 				dialog.setMessage("Downloading application.\n Please wait...");
-
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				
 				dialog.setButton("Cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
-
 						try {
 							bCancelled = true;
 							dialog.dismiss();
+							notifyStatus(EzeConstants.RESULT_DOWNLOAD_ABORTED);
 						} catch (Exception e) {
 						}
 					}
@@ -245,17 +246,14 @@ public class EzetapDownloadUtils {
 
 			case DOWNLOAD_COMPLETED: {
 				dialog.dismiss();
-
 				try {
-
 					String fileName = downloadedFilePath;
-					Uri aUri;// = Uri.parse(fileName);
-					aUri = Uri.fromFile(new File(fileName));
+					Uri aUri = Uri.fromFile(new File(fileName));
 					Intent intent = new Intent(Intent.ACTION_VIEW);
 					intent.setDataAndType(aUri, "application/vnd.android.package-archive");
-					currentActivity.startActivity(intent);
+					currentActivity.startActivityForResult(intent, AppConstants.REQ_CODE_INSTALL);
 					currentActivity = null;
-					callingActivity.handleMessage(msg);
+					notifyStatus(EzeConstants.RESULT_DOWNLOAD_SUCCESS);
 				} catch (Exception e) {
 				}
 			}
@@ -267,6 +265,15 @@ public class EzetapDownloadUtils {
 		}
 	};
 
+	private void notifyStatus(int status) {
+		Handler handler = EzetapUtils.getHandler();
+		if(handler != null) {
+			Message msg = handler.obtainMessage();
+			msg.what = status;
+			handler.sendMessage(msg);
+		}
+	}
+	
 	private boolean isSDCardAvailable(int minSpaceRequired) {
 		long available = -1L;
 		StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());

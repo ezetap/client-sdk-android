@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.widget.Toast;
+import com.eze.api.EzeAPIConstants.EzetapErrors;
 
 public class EzeAPIPlugin extends CordovaPlugin {
 
@@ -41,6 +42,7 @@ public class EzeAPIPlugin extends CordovaPlugin {
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
 		super.initialize(cordova, webView);
 	}
+
 
 	/**
 	 * Method invoked when EzeAPIPlugin Cordova Plugin is invoked
@@ -70,7 +72,7 @@ public class EzeAPIPlugin extends CordovaPlugin {
 			intent.putExtra("params", params);
 			cordova.startActivityForResult(this, intent, EZE_REQUESTCODE);
 		} catch (ActivityNotFoundException e) {
-			Toast.makeText(cordova.getActivity(), "Looks like you have not defined EzeAPIActivity in your Manifest file.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(cordova.getActivity(), EzetapErrors.ERROR_MANIFEST_ACTIVITY.getErrorMessage(), Toast.LENGTH_SHORT).show();
 		}
 	}
 

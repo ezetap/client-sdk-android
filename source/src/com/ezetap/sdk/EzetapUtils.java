@@ -8,7 +8,6 @@
 
 package com.ezetap.sdk;
 
-import static com.ezetap.sdk.AppConstants.APK_URL;
 import static com.ezetap.sdk.AppConstants.BASE_PACKAGE;
 
 import java.util.Hashtable;
@@ -22,8 +21,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ezetap.sdk.EzeConstants.LoginAuthMode;
 
@@ -36,6 +36,8 @@ public class EzetapUtils {
 	public static final String EZETAP_PACKAGE_ACTION = ".EZESERV";
 	private static final String DEBUG_TAG = "EzeUtils";
 
+	private static Handler eventHandler;
+	
 	/**
 	 * To initiate a card payment transaction, application should call this
 	 * method with following parameters:
@@ -147,7 +149,7 @@ public class EzetapUtils {
 		}
 	}
 
-	protected String findTargetAppPackage(Intent intent, Activity context) {
+	protected static String findTargetAppPackage(Intent intent, Activity context) {
 		PackageManager pm = context.getPackageManager();
 		List<ResolveInfo> availableApps = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 		if (availableApps != null) {
@@ -176,22 +178,16 @@ public class EzetapUtils {
 		return false;
 	}
 
-	protected AlertDialog showDownloadDialog(final Activity context) {
+	protected AlertDialog showDownloadDialog(final Activity context, final String username, final String appKey) {
 		AlertDialog.Builder downloadDialog = new AlertDialog.Builder(context);
 		downloadDialog.setTitle("Install Ezetap Service Application");
 		downloadDialog.setMessage("This application requires Ezetap Service Application. Would you like to install it?");
 		downloadDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				// TODO: Jayesh : need to define multiple links
-				// Uri uri = Uri
-				// .parse(APK_URL);
-				// Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				try {
-					// context.startActivity(intent);
-					EzetapDownloadUtils utils = new EzetapDownloadUtils(APK_URL, context, "ezetap_android_service", null);
-					utils.start();
-
+					NetworkUtils utils = new NetworkUtils(context, username, appKey);
+					utils.getAppStatus();
 				} catch (ActivityNotFoundException anfe) {
 					Log.v(DEBUG_TAG, "Could not install Ezetap Service Application.");
 				}
@@ -200,14 +196,18 @@ public class EzetapUtils {
 		downloadDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				Toast toast = Toast.makeText(context, "Operation aborted.", Toast.LENGTH_LONG);
-				toast.show();
+				context.setResult(EzeConstants.RESULT_INSTALL_CANCELLED);
+				if(eventHandler != null) {
+					Message msg = eventHandler.obtainMessage();
+					msg.what = EzeConstants.RESULT_INSTALL_CANCELLED;
+					eventHandler.sendMessage(msg);
+				}
 			}
 		});
 		return downloadDialog.show();
 	}
 	
-	protected AlertDialog showDownloadDialog1(final Activity context) {
+	protected AlertDialog showDownloadDialog1(final Activity context, final String username, final String appKey) {
 		AlertDialog.Builder downloadDialog = new AlertDialog.Builder(context);
 		downloadDialog.setTitle("Install Compatible Ezetap Service Application");
 		downloadDialog.setMessage("This SDK requires new Ezetap Service Application which supports new features added in SDK. Would you like to install it?");
@@ -215,9 +215,8 @@ public class EzetapUtils {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
 				try {
-					EzetapDownloadUtils utils = new EzetapDownloadUtils(APK_URL, context, "ezetap_android_service", null);
-					utils.start();
-
+					NetworkUtils utils = new NetworkUtils(context, username, appKey);
+					utils.getAppStatus();
 				} catch (ActivityNotFoundException anfe) {
 					Log.v(DEBUG_TAG, "Could not install Ezetap Service Application.");
 				}
@@ -226,11 +225,22 @@ public class EzetapUtils {
 		downloadDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				Toast toast = Toast.makeText(context, "Operation aborted.", Toast.LENGTH_LONG);
-				toast.show();
+				if(eventHandler != null) {
+					Message msg = eventHandler.obtainMessage();
+					msg.what = EzeConstants.RESULT_INSTALL_CANCELLED;
+					eventHandler.sendMessage(msg);
+				}
 			}
 		});
 		return downloadDialog.show();
+	}
+	
+	public static void setHandler(Handler handler) {
+		eventHandler = handler;
+	}
+	
+	public static Handler getHandler() {
+		return eventHandler;
 	}
 
 	/**
@@ -289,4 +299,12 @@ public class EzetapUtils {
 
 	}
 
+	public static boolean isEzetapApplicationInstalled(Activity activity) {
+		Intent intent = new Intent();
+		intent.setAction(BASE_PACKAGE + EZETAP_PACKAGE_ACTION);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+		String targetAppPackage = findTargetAppPackage(intent, activity);
+		return !(targetAppPackage == null);
+	}
 }

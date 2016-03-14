@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ezetap.sdk.EzeConstants.AppMode;
 import com.ezetap.sdk.EzeConstants.CommunicationChannel;
@@ -75,16 +74,19 @@ public abstract class EzetapPayApis {
 			if (currencyCode != null)
 				this.currencyCode = currencyCode;
 			// Commented as currently only demo is available
-			
+
+			if (mode != null && mode.equals(AppMode.EZETAP_DEMO)) {
+				AppConstants.BASE_PACKAGE = AppConstants.DEMO_BASE_PACKAGE;
+				AppConstants.APP_STATUS_URL = AppConstants.DEMO_APP_STATUS_URL;
+			}
 			if (mode != null && mode.equals(AppMode.EZETAP_PROD)) {
 				AppConstants.BASE_PACKAGE = AppConstants.PROD_BASE_PACKAGE;
-				AppConstants.APK_URL = AppConstants.PROD_APK_URL;
+				AppConstants.APP_STATUS_URL = AppConstants.PROD_APP_STATUS_URL;
 			}
 			if (mode != null && mode.equals(AppMode.EZETAP_PREPROD)) {
 				AppConstants.BASE_PACKAGE = AppConstants.PREPROD_BASE_PACKAGE;
-				AppConstants.APK_URL = AppConstants.PREPROD_APK_URL;
+				AppConstants.APP_STATUS_URL = AppConstants.PREPROD_APP_STATUS_URL;
 			}			 
-
 			this.captureSignature = captureSignature;
 			this.preferredCommChannel = defaultChannel;
 		}
@@ -101,7 +103,7 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -114,7 +116,7 @@ public abstract class EzetapPayApis {
 				intent.putExtra(EzeConstants.KEY_USERNAME, username);
 				intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
 				intent.putExtra(EzeConstants.KEY_CAPTURE_SIGNATURE, captureSignature);
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 
 			} catch (Exception e) {
@@ -141,7 +143,7 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -158,7 +160,7 @@ public abstract class EzetapPayApis {
 				intent.putExtra(EzeConstants.KEY_ACTION, EzeConstants.ACTION_CHECK_UPDATES);
 				intent.putExtra(EzeConstants.KEY_USERNAME, username);
 				intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 
 			} catch (Exception e) {
@@ -182,6 +184,7 @@ public abstract class EzetapPayApis {
 
 			_startCardPayment(context, reqCode, username, amount, 0, orderNumber, tip, mobile, null, externalReference2, externalReference3, appData);
 		}
+		
 
 		@Override
 		public void startCardPayment(Activity context, int reqCode, String username, double amount, String orderNumber, double tip, String mobile, String emailId, String externalReference2, String externalReference3, Hashtable<String, Object> appData) {
@@ -208,12 +211,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -286,6 +289,9 @@ public abstract class EzetapPayApis {
 						} else if (aVal instanceof String) {
 							addData.put(aKey, aVal);
 						}
+						else if (aVal instanceof Boolean){
+							addData.put(aKey, aVal);
+						}
 					}
 					intent.putExtra(EzeConstants.KEY_ADDITIONAL_DATA, addData.toString());
 				}
@@ -293,7 +299,7 @@ public abstract class EzetapPayApis {
 				Log.v(DEBUG_TAG, "MAP>>" + appData);
 				Log.v(DEBUG_TAG, ">>" + reqData.toString(0));
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 
 			} catch (Exception e) {
@@ -338,12 +344,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -396,6 +402,7 @@ public abstract class EzetapPayApis {
 				Log.v(DEBUG_TAG, ">>" + reqData.toString(0));
 				intent.putExtra(EzeConstants.ALLOW_SDK_DEBUGGING, false);
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -414,12 +421,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -475,7 +482,7 @@ public abstract class EzetapPayApis {
 				
 				intent.putExtra(EzeConstants.ALLOW_SDK_DEBUGGING, false);
 				intent.putExtra("isCachingEnabled", false);
-				
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);		
 
 			} catch(JSONException e){
@@ -493,12 +500,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -545,6 +552,7 @@ public abstract class EzetapPayApis {
 				
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
 				intent.putExtra("isCachingEnabled", false);
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);		
 			} catch(Exception e){
 				e.printStackTrace();
@@ -571,12 +579,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -602,7 +610,7 @@ public abstract class EzetapPayApis {
 				reqData.put(EzeConstants.KEY_CAPTURE_SIGNATURE, captureSignature);
 
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -619,7 +627,7 @@ public abstract class EzetapPayApis {
 		 */
 
 		@Override
-		public void startVoidTransaction(Activity context, int reqCode, String userName, String txnId) {
+		public void startVoidTransaction(Activity context, int reqCode, String username, String txnId) {
 			Log.v(DEBUG_TAG, "txnID=" + txnId);
 
 			try {
@@ -631,12 +639,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -648,13 +656,14 @@ public abstract class EzetapPayApis {
 				reqData.put(EzeConstants.KEY_ACTION, EzeConstants.ACTION_VOID);
 
 				reqData.put(EzeConstants.KEY_TRANSACTION_ID, txnId);
-				reqData.put(EzeConstants.KEY_USERNAME, userName);
+				reqData.put(EzeConstants.KEY_USERNAME, username);
 				// reqData.put(EzeConstants.KEY_APPKEY, appKey);
 
-				if (!checkAndSetLoginMode(loginMode, intent, userName, reqData, appKey, merchantName, currencyCode))
+				if (!checkAndSetLoginMode(loginMode, intent, username, reqData, appKey, merchantName, currencyCode))
 					return;
 
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -678,7 +687,7 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -693,6 +702,7 @@ public abstract class EzetapPayApis {
 				// reqData.put(EzeConstants.KEY_APPKEY, appKey);
 
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -720,12 +730,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -743,7 +753,7 @@ public abstract class EzetapPayApis {
 					return;
 
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -767,12 +777,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -809,7 +819,7 @@ public abstract class EzetapPayApis {
 				intent.putExtra(EzeConstants.KEY_SIGNATURE_DATA, s.toByteArray());
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
 				intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -833,12 +843,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -853,7 +863,7 @@ public abstract class EzetapPayApis {
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
 
 				// intent.putExtra("DBG_HOST", "10.0.1.118:8080");
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -880,12 +890,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -899,7 +909,7 @@ public abstract class EzetapPayApis {
 
 				intent.putExtra(EzeConstants.KEY_USERNAME, username);
 				// intent.putExtra(EzeConstants.KEY_APPKEY, ezetapLicenceKey);
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -924,7 +934,7 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -938,7 +948,7 @@ public abstract class EzetapPayApis {
 
 				if (!checkAndSetLoginMode(loginMode, intent, username, null, appKey, merchantName, currencyCode))
 					return;
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -965,12 +975,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -984,7 +994,7 @@ public abstract class EzetapPayApis {
 
 				if (!checkAndSetLoginMode(loginMode, intent, username, null, appKey, merchantName, currencyCode))
 					return;
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1003,7 +1013,7 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -1014,16 +1024,10 @@ public abstract class EzetapPayApis {
 				intent.putExtra(EzeConstants.KEY_ACTION, EzeConstants.ACTION_GET_CARD_INFO);
 				intent.putExtra(EzeConstants.KEY_USERNAME, username);
 
-				if ((loginMode == LoginAuthMode.EZETAP_LOGIN_PROMPT) || (loginMode == LoginAuthMode.EZETAP_LOGIN_CUSTOM)) {
-					if (!checkAndSetLoginMode(loginMode, intent, username, null, appKey, merchantName, currencyCode))
-						return;
-					intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
-				} else {
-					// currently AUTH_BYPASS is not supported for this API
-					Toast.makeText(context, "Currently AUTH_BYPASS is not supported for this API", Toast.LENGTH_LONG).show();
+				if (!checkAndSetLoginMode(loginMode, intent, username, null, appKey, merchantName, currencyCode))
 					return;
-				}
-
+				intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1034,12 +1038,12 @@ public abstract class EzetapPayApis {
 			return new EzetapUtils().findTargetAppPackage(intent, context);
 		}
 
-		private AlertDialog showDownloadDialog(final Activity context) {
-			return new EzetapUtils().showDownloadDialog(context);
+		private AlertDialog showDownloadDialog(Activity context, String username) {
+			return new EzetapUtils().showDownloadDialog(context, username, appKey);
 		}
 		
-		private AlertDialog showDownloadDialog1(final Activity context) {
-			return new EzetapUtils().showDownloadDialog1(context);
+		private AlertDialog showDownloadDialog1(Activity context, String username) {
+			return new EzetapUtils().showDownloadDialog1(context, username, appKey);
 		}
 		
 		private boolean isServiceAppCompatible(Intent intent, Activity context) {
@@ -1056,11 +1060,6 @@ public abstract class EzetapPayApis {
 			if (loginMode == LoginAuthMode.EZETAP_LOGIN_CUSTOM) {
 				intent.putExtra(EzeConstants.KEY_ENABLE_CUSTOM_LOGIN, !(AppConstants.LOGIN_SESSION_TIME_OUT_AUTO_HANDLE)); // if
 																															// auto
-																															// true,
-																															// custom
-																															// login
-																															// is
-																															// false
 			} else if (loginMode == LoginAuthMode.EZETAP_LOGIN_PROMPT) {
 				intent.putExtra(EzeConstants.KEY_ENABLE_CUSTOM_LOGIN, false);
 			} else if (loginMode == LoginAuthMode.EZETAP_LOGIN_BYPASS) {
@@ -1115,12 +1114,12 @@ public abstract class EzetapPayApis {
 				String targetAppPackage = findTargetAppPackage(intent, context);
 				if (targetAppPackage == null) {
 					Log.v(DEBUG_TAG, "Ezetap app not found.");
-					showDownloadDialog(context);
+					showDownloadDialog(context, username);
 					return;
 				}
 				if(!isServiceAppCompatible(intent, context)){
 					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
-					showDownloadDialog1(context);
+					showDownloadDialog1(context, username);
 					return;
 				}
 				intent.setPackage(targetAppPackage);
@@ -1162,7 +1161,7 @@ public abstract class EzetapPayApis {
 				Log.v(DEBUG_TAG, "MAP>>" + appData);
 				Log.v(DEBUG_TAG, ">>" + reqData.toString(0));
 				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
-
+				intent.putExtra("removeConfirmTransaction", true);
 				context.startActivityForResult(intent, reqCode);
 
 			} catch (Exception e) {
@@ -1186,6 +1185,164 @@ public abstract class EzetapPayApis {
 				Hashtable<String, Object> appData,
 				Hashtable<String, Object> addData) {
 			_startCardPayment(context, reqCode, username, amount, amountCashback, orderNumber, tip, mobile, emailID, null, null, appData, addData);
+		}
+
+		@Override
+		public void startWalletPayment(Activity context, int reqCode, String username, double amount, 
+			String orderNumber, String customerMobile, String customerName, String emailAddress, String[] labels) {
+			Log.v(DEBUG_TAG, "amount=" + amount + " mobile=" + customerMobile);
+			try {
+				Intent intent = createIntent();
+				intent.setAction(BASE_PACKAGE + EZETAP_PACKAGE_ACTION);
+				intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+				String targetAppPackage = findTargetAppPackage(intent, context);
+				if (targetAppPackage == null) {
+					Log.v(DEBUG_TAG, "Ezetap app not found.");
+					showDownloadDialog(context, username);
+					return;
+				}
+				if(!isServiceAppCompatible(intent, context)){
+					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
+					showDownloadDialog1(context, username);
+					return;
+				}
+				intent.setPackage(targetAppPackage);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				intent.putExtra("labels", labels);
+
+				JSONObject reqData = new JSONObject();
+				reqData.put(EzeConstants.KEY_ACTION, EzeConstants.ACTION_PAY_WALLET);
+
+				if (!checkAndSetLoginMode(loginMode, intent, username, reqData, appKey, merchantName, currencyCode))
+					return;
+
+				reqData.put(EzeConstants.KEY_AMOUNT, Double.valueOf(amount));
+				reqData.put(EzeConstants.KEY_USERNAME, username);
+				reqData.put(EzeConstants.KEY_ORDERID, orderNumber);
+				reqData.put(EzeConstants.KEY_CUSTOMER_NAME, customerName);
+				reqData.put(EzeConstants.KEY_CUSTOMER_MOBILE, customerMobile);
+				reqData.put(EzeConstants.KEY_CUSTOMER_EMAIL, emailAddress);
+				reqData.put(EzeConstants.KEY_CAPTURE_SIGNATURE, captureSignature);
+				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
+				intent.putExtra("removeConfirmTransaction", true);
+				context.startActivityForResult(intent, reqCode);
+			} catch (Exception e) {
+			}
+		}
+
+		@Override
+		public void startCNPPayment(Activity context, int reqCode, String cnpURL, 
+				String username, double amount, 
+				String orderNumber,  String mobile, String emailID,
+				String externalReference2, String externalReference3,
+				Hashtable<String, Object> appData,
+				Hashtable<String, Object> additionalData) {
+
+			Log.v(DEBUG_TAG, "amount=" + amount  + " mobile=" + mobile);
+			try {
+				Intent intent = createIntent();
+
+				intent.setAction(BASE_PACKAGE + EZETAP_PACKAGE_ACTION);
+				intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+				String targetAppPackage = findTargetAppPackage(intent, context);
+				if (targetAppPackage == null) {
+					Log.v(DEBUG_TAG, "Ezetap app not found.");
+					showDownloadDialog(context, username);
+					return;
+				}
+				if(!isServiceAppCompatible(intent, context)){
+					Log.v(DEBUG_TAG, "Compatible Ezetap app not found.");
+					showDownloadDialog1(context, username);
+					return;
+				}
+				intent.setPackage(targetAppPackage);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				JSONObject reqData = new JSONObject();
+				if(preferredCommChannel != CommunicationChannel.NONE)
+					reqData.put(EzeConstants.KEY_PREFERRED_COMM, preferredCommChannel.toString());
+
+				reqData.put(EzeConstants.KEY_ACTION, EzeConstants.ACTION_PAYCNP);
+
+				if (!checkAndSetLoginMode(loginMode, intent, username, reqData, appKey, merchantName, currencyCode))
+					return;
+
+				reqData.put(EzeConstants.KEY_AMOUNT, Double.valueOf(amount));
+				
+				// ensure you pass the username AND your appkey
+				reqData.put(EzeConstants.KEY_CNPURL, cnpURL);
+				reqData.put(EzeConstants.KEY_USERNAME, username);
+				reqData.put(EzeConstants.KEY_ORDERID, orderNumber);
+				reqData.put(EzeConstants.KEY_CUSTOMER_MOBILE, mobile);
+
+				if (emailID != null) {
+					reqData.put(EzeConstants.KEY_CUSTOMER_EMAIL, emailID);
+					intent.putExtra(EzeConstants.KEY_CUSTOMER_EMAIL, emailID);
+				}
+
+				// reqData.put(EzeConstants.KEY_APPKEY, appKey);
+				reqData.put(EzeConstants.KEY_CAPTURE_SIGNATURE, captureSignature);
+				if (externalReference2 != null)
+					reqData.put(EzeConstants.KEY_EXTERNAL_REF_2, externalReference2);
+				if (externalReference3 != null)
+					reqData.put(EzeConstants.KEY_EXTERNAL_REF_3, externalReference3);
+
+				if (appData != null) {
+					Enumeration<String> keys = appData.keys();
+					while (keys.hasMoreElements()) {
+						String aKey = (String) keys.nextElement();
+						Object aVal = appData.get(aKey);
+						if (aVal instanceof String[]) {
+							JSONArray jsonArr = new JSONArray();
+							String[] arr = (String[]) aVal;
+
+							for (int index = 0; index < arr.length; index++) {
+								jsonArr.put(arr[index]);
+							}
+
+							reqData.put(aKey, jsonArr);
+						} else if (aVal instanceof String) {
+							reqData.put(aKey, aVal);
+						}
+					}
+				}
+
+				if (additionalData != null) {
+					JSONObject addData = new JSONObject();
+					Enumeration<String> keys = additionalData.keys();
+					while (keys.hasMoreElements()) {
+						String aKey = (String) keys.nextElement();
+						Object aVal = additionalData.get(aKey);
+						if (aVal instanceof String[]) {
+							JSONArray jsonArr = new JSONArray();
+							String[] arr = (String[]) aVal;
+							for (int index = 0; index < arr.length; index++) {
+								jsonArr.put(arr[index]);
+							}
+							addData.put(aKey, jsonArr);
+						} else if (aVal instanceof String) {
+							addData.put(aKey, aVal);
+						}
+						else if (aVal instanceof Boolean){
+							addData.put(aKey, aVal);
+						}
+					}
+					intent.putExtra(EzeConstants.KEY_ADDITIONAL_DATA, addData.toString());
+				}
+				
+				Log.v(DEBUG_TAG, "MAP>>" + appData);
+				Log.v(DEBUG_TAG, ">>" + reqData.toString(0));
+				intent.putExtra(EzeConstants.KEY_JSON_REQ_DATA, reqData.toString());
+				intent.putExtra("removeConfirmTransaction", true);
+				context.startActivityForResult(intent, reqCode);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 

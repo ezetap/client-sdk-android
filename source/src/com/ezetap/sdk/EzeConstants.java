@@ -21,8 +21,10 @@ public class EzeConstants {
 	public static final String KEY_ACTION = "action";
 	public static final String KEY_JSON_REQ_DATA = "jsonReqData";
 	public static final String KEY_ADDITIONAL_DATA = "additionalData";
+	public static final String KEY_CNPURL = "cnpurl";
 	public static final String KEY_USERNAME = "username";
 	public static final String KEY_TIP_ENABLED = "tipEnabled";
+	public static final String KEY_EMI_NOTELIGIBLE = "markEMINotEligible";
 
 	public static final String KEY_PASSWORD = "password";
 	public static final String KEY_NEW_PASSWORD = "newPassword";
@@ -59,6 +61,9 @@ public class EzeConstants {
 	public static final String KEY_TXN_CARD_TYPE = "cardType";
 	public static final String KEY_MERCHANT_NAME = "merchantName";
 	public static final String KEY_CURRENCY_CODE = "currencyCode";
+	public static final String KEY_APPS = "apps";
+	public static final String KEY_APPLICATION_ID = "applicationId";
+	public static final String KEY_VERSION_CODE = "versionCode";
 	
 	public static final String KEY_COMM_DEVICE_ID = "communicationDeviceId";
 	public static final String KEY_PREFERRED_COMM = "preferredCommunication";
@@ -135,7 +140,14 @@ public class EzeConstants {
 	 */
 	public static final String ACTION_PAYCARD = "paycard";
 
+	/**
+	 * Action code to start a CNP transaction.
+	 */
+	public static final String ACTION_PAYCNP = "payCNP";
+	
 	public static final String ACTION_PAY_CASH = "paycash";
+	
+	public static final String ACTION_PAY_WALLET = "paywallet";
 
 	/**
 	 * Action code to register Ezetap Device.
@@ -194,9 +206,14 @@ public class EzeConstants {
 	public static final String ACTION_INIT_DEVICE_SESSION = "initDeviceSession";
 
 	// result from Ezetap service application
-	public static final int RESULT_SUCCESS = 2001;
-	public static final int RESULT_FAILED = 3001;
-
+	public static final int RESULT_SUCCESS 	= 2001;
+	public static final int RESULT_FAILED 	= 3001;
+	
+	public static final int RESULT_DOWNLOAD_FAILURE = 4001;
+	public static final int RESULT_INSTALL_CANCELLED = 4002;
+	public static final int RESULT_DOWNLOAD_SUCCESS = 4003;
+	public static final int RESULT_DOWNLOAD_ABORTED = 4004;
+	
 	/**
 	 * Ezetap result codes
 	 */
