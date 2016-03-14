@@ -1,380 +1,478 @@
 package com.ezeapi.sample;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.eze.api.EzeAPI;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.eze.api.EzeAPI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class EzeNativeSampleActivity extends Activity implements OnClickListener {
-	private EditText txtRefNum;
-	private EditText txtAmount;
-	private EditText txtAmountCashback;
-	private EditText txtName;
-	private EditText txtMobile;
-	private EditText txtEmail;
+    private final int REQUESTCODE_INIT = 10001;
+    private final int REQUESTCODE_PREP = 10002;
 
-	private Button btnInit;
-	private Button btnPrep;
-	private Button btnCardSale;
-	private Button btnCardCashback;
-	private Button btnCardCashAtPOS;
-	private Button btnCash;
-	private Button btnSearchTxn;
-	private Button btnVoidTxn;
-	private Button btnAttachSign;
-	private Button btnClose;
+    private final int REQUESTCODE_WALLET = 10003;
+//    private final int REQUESTCODE_CNP = 10004;
+    private final int REQUESTCODE_SALE = 10006;
+    private final int REQUESTCODE_CASHBACK = 10007;
+    private final int REQUESTCODE_CASHATPOS = 10008;
+    private final int REQUESTCODE_CASH = 10009;
 
-	private String strTxnId=null;
-	private String mandatoryErrMsg = "Please fill up mandatory params.";
-	private final int REQUESTCODE_INIT=10001;
-	private final int REQUESTCODE_PREP=10002;
-	private final int REQUESTCODE_CLOSE=10003;
-	private final int REQUESTCODE_VOID=10004;
-	private final int REQUESTCODE_SEARCH=10005;
-	private final int REQUESTCODE_CASH=10006;
-	private final int REQUESTCODE_SALE=10007;
-	private final int REQUESTCODE_CASHBACK=10008;
-	private final int REQUESTCODE_CASHATPOS=10009;
-	private final int REQUESTCODE_ATTACHSIGN=10010;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_nativesample);
-
-		btnInit = ((Button) findViewById(R.id.btnInitialize));
-		btnInit.setOnClickListener(this);
-
-		btnPrep = ((Button) findViewById(R.id.btnPrepare));
-		btnPrep.setOnClickListener(this);
-
-		btnCardSale = ((Button) findViewById(R.id.btnSale));
-		btnCardSale.setOnClickListener(this);
-
-		btnCardCashback = ((Button) findViewById(R.id.btnCashback));
-		btnCardCashback.setOnClickListener(this);
-
-		btnCardCashAtPOS = ((Button) findViewById(R.id.btnCashAtPOS));
-		btnCardCashAtPOS.setOnClickListener(this);
-
-		btnCash = ((Button) findViewById(R.id.btnCashTxn));
-		btnCash.setOnClickListener(this);
-
-		btnSearchTxn = ((Button) findViewById(R.id.btnSearchTxn));
-		btnSearchTxn.setOnClickListener(this);
-
-		btnVoidTxn = ((Button) findViewById(R.id.btnVoidTxn));
-		btnVoidTxn.setOnClickListener(this);
-
-		btnAttachSign = ((Button) findViewById(R.id.btnAttachSignature));
-		btnAttachSign.setOnClickListener(this);
-
-		btnClose = ((Button) findViewById(R.id.btnClose));
-		btnClose.setOnClickListener(this);
-
-		txtRefNum = (EditText) findViewById(R.id.txtRefNum);
-		txtAmount = (EditText) findViewById(R.id.txtAmount);
-		txtAmountCashback = (EditText) findViewById(R.id.txtCashbackAmount);
-		txtName = (EditText) findViewById(R.id.txtName);
-		txtMobile = (EditText) findViewById(R.id.txtMobile);
-		txtEmail = (EditText) findViewById(R.id.txtEmail);
-	}
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		super.onActivityResult(requestCode, resultCode, intent);
-		if(intent!=null && intent.hasExtra("response"))
-			Toast.makeText(this, intent.getStringExtra("response"),Toast.LENGTH_LONG).show();
-		switch (requestCode) {
-		case REQUESTCODE_CASH:
-		case REQUESTCODE_CASHBACK:
-		case REQUESTCODE_CASHATPOS:
-		case REQUESTCODE_SALE:
-			if(resultCode == RESULT_OK){
-				try{
-					JSONObject response = new JSONObject(intent.getStringExtra("response"));
-					response = response.getJSONObject("result");
-					response = response.getJSONObject("txn");
-					strTxnId = response.getString("txnId");
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-			break;
-
-		default:
-			break;
-		}
-
-	}
-
-	@Override
-	public void onClick(View view) {
-		switch (view.getId()) {
-		case R.id.btnAttachSignature:
-			attachSignature();
-			break;
-		case R.id.btnCashAtPOS:
-			doCashAtPosTxn();
-			break;
-		case R.id.btnCashback:
-			doCashbackTxn();
-			break;
-		case R.id.btnCashTxn:
-			doCashTxn();
-			break;
-		case R.id.btnClose:
-			closeEzetap();
-			break;
-		case R.id.btnInitialize:
-			initEzetap();
-			break;
-		case R.id.btnPrepare:
-			prepareEzetap();
-			break;
-		case R.id.btnSale:
-			doSaleTxn();
-			break;
-		case R.id.btnSearchTxn:
-			searchTxn();
-			break;
-		case R.id.btnVoidTxn:
-			voidTxn();
-			break;
-		default:
-			break;
-		}
-	}
-
-	private boolean isMandatoryParamsValid(){
-		if(txtAmount.getText().toString().equalsIgnoreCase("") || txtRefNum.getText().toString().equalsIgnoreCase(""))
-			return false;
-		else					
-			return true;
-	}
-
-	private boolean isTransactionIdValid(){
-		if(strTxnId==null)
-			return false;
-		else					
-			return true;
-	}
-
-	private void displayToast(String message){
-		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-	}
-
-	private void voidTxn() {
-		if(isTransactionIdValid()){
-			EzeAPI.voidTransaction(this, REQUESTCODE_VOID, strTxnId);
-		}else
-			displayToast("Inorrect txn Id, please make a Txn.");
-	}
+    private final int REQUESTCODE_SEARCH = 10010;
+    private final int REQUESTCODE_VOID = 10011;
+    private final int REQUESTCODE_ATTACHSIGN = 10012;
+    private final int REQUESTCODE_UPDATE = 10013;
+    private final int REQUESTCODE_CLOSE = 10014;
 
 
-	private void searchTxn() {
-		JSONObject jsonRequest = new JSONObject();
-		try {
-			jsonRequest.put("agentName", "Demo User");
-			jsonRequest.put("startDate", "1/1/2015");
-			jsonRequest.put("endDate", "12/31/2015");
-			jsonRequest.put("txnType", "cash");
-			jsonRequest.put("txnStatus", "void");
-			EzeAPI.searchTransaction(this, REQUESTCODE_SEARCH, jsonRequest);
-		}catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+    private EditText txtRefNum, txtAmount, txtAmountCashback, txtName, txtMobile, txtEmail;
+    private Button btnInit, btnPrep, btnWalletTxn, 
+    //btnCNPTxn, 
+    btnCardSale, btnCardCashback, btnCardCashAtPOS, btnCash, btnSearchTxn, btnVoidTxn, btnAttachSign, btnUpdate, btnClose;
 
-	private void doSaleTxn() {
-		if(isMandatoryParamsValid()){
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonOptionalParams = new JSONObject();
-			JSONObject jsonReferences = new JSONObject();
-			JSONObject jsonCustomer = new JSONObject();
-			try {				
-				//Building Customer Object
-				jsonCustomer.put("name", txtName.getText().toString().trim());
-				jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
-				jsonCustomer.put("email", txtEmail.getText().toString().trim());
+    private String strTxnId = null;
+    private String mandatoryErrMsg = "Please fill up mandatory params.";
 
-				//Building References Object
-				jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_nativesample);
 
-				//Building Optional params Object
-				jsonOptionalParams.put("amountCashback",0.00);//Cannot have amount cashback in SALE transaction.
-				jsonOptionalParams.put("amountTip",0.00);
-				jsonOptionalParams.put("references",jsonReferences);
-				jsonOptionalParams.put("customer",jsonCustomer);
+        btnInit = ((Button) findViewById(R.id.btnInitialize));
+        btnInit.setOnClickListener(this);
 
-				//Building final request object
-				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("mode", "SALE");//This attributes determines the type of transaction
-				jsonRequest.put("options", jsonOptionalParams);
+        btnPrep = ((Button) findViewById(R.id.btnPrepare));
+        btnPrep.setOnClickListener(this);
 
-				EzeAPI.cardTransaction(this, REQUESTCODE_SALE, jsonRequest);
-			}catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}else
-			displayToast(mandatoryErrMsg);
-	}
+        btnWalletTxn = ((Button) findViewById(R.id.btnWalletTxn));
+        btnWalletTxn.setOnClickListener(this);
 
-	private void prepareEzetap() {
-		EzeAPI.prepareDevice(this, REQUESTCODE_PREP);
-	}
+//        btnCNPTxn = ((Button) findViewById(R.id.btnCNPTxn));
+//        btnCNPTxn.setOnClickListener(this);
 
-	private void initEzetap() {
-		JSONObject jsonRequest = new JSONObject();
-		try {
-			jsonRequest.put("demoAppKey","Enter your demo app key");
-			jsonRequest.put("prodAppKey","Enter your prod app key");
-			jsonRequest.put("merchantName","Merchant Name");
-			jsonRequest.put("userName","user name");
-			jsonRequest.put("currencyCode","INR");
-			jsonRequest.put("appMode","DEMO");
-			jsonRequest.put("captureSignature","false");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		EzeAPI.initialize(this, REQUESTCODE_INIT, jsonRequest);
-	}
+        btnCardSale = ((Button) findViewById(R.id.btnSale));
+        btnCardSale.setOnClickListener(this);
 
-	private void closeEzetap() {
-		EzeAPI.close(this, REQUESTCODE_CLOSE);
-	}
+        btnCardCashback = ((Button) findViewById(R.id.btnCashback));
+        btnCardCashback.setOnClickListener(this);
 
-	private void doCashTxn() {
-		if(isMandatoryParamsValid()){
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonOptionalParams = new JSONObject();
-			JSONObject jsonReferences = new JSONObject();
-			JSONObject jsonCustomer = new JSONObject();
-			try {
-				//Building Customer Object
-				jsonCustomer.put("name", txtName.getText().toString().trim());
-				jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
-				jsonCustomer.put("email", txtEmail.getText().toString().trim());
+        btnCardCashAtPOS = ((Button) findViewById(R.id.btnCashAtPOS));
+        btnCardCashAtPOS.setOnClickListener(this);
 
-				//Building References Object
-				jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+        btnCash = ((Button) findViewById(R.id.btnCashTxn));
+        btnCash.setOnClickListener(this);
 
-				//Building Optional params Object
-				jsonOptionalParams.put("amountCashback",0.00);//Cannot have amount cashback in cash transaction.
-				jsonOptionalParams.put("amountTip",0.00);
-				jsonOptionalParams.put("references",jsonReferences);
-				jsonOptionalParams.put("customer",jsonCustomer);
+        btnSearchTxn = ((Button) findViewById(R.id.btnSearchTxn));
+        btnSearchTxn.setOnClickListener(this);
 
-				//Building final request object
-				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("options", jsonOptionalParams);
+        btnVoidTxn = ((Button) findViewById(R.id.btnVoidTxn));
+        btnVoidTxn.setOnClickListener(this);
 
-				EzeAPI.cashTransaction(this, REQUESTCODE_CASH, jsonRequest);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}else
-			displayToast(mandatoryErrMsg);
-	}
+        btnAttachSign = ((Button) findViewById(R.id.btnAttachSignature));
+        btnAttachSign.setOnClickListener(this);
 
-	private void doCashbackTxn() {
-		if(isMandatoryParamsValid()){
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonOptionalParams = new JSONObject();
-			JSONObject jsonReferences = new JSONObject();
-			JSONObject jsonCustomer = new JSONObject();
-			try {				
-				//Building Customer Object
-				jsonCustomer.put("name", txtName.getText().toString().trim());
-				jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
-				jsonCustomer.put("email", txtEmail.getText().toString().trim());
+        btnUpdate = (Button) findViewById(R.id.btnUpdate);
+        btnUpdate.setOnClickListener(this);
 
-				//Building References Object
-				jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+        btnClose = ((Button) findViewById(R.id.btnClose));
+        btnClose.setOnClickListener(this);
 
-				//Building Optional params Object
-				jsonOptionalParams.put("amountCashback",txtAmountCashback.getText().toString().trim());
-				jsonOptionalParams.put("amountTip",0.00);
-				jsonOptionalParams.put("references",jsonReferences);
-				jsonOptionalParams.put("customer",jsonCustomer);
 
-				//Building final request object
-				jsonRequest.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("mode", "CASHBACK");//This attributes determines the type of transaction
-				jsonRequest.put("options", jsonOptionalParams);
+        txtRefNum = (EditText) findViewById(R.id.txtRefNum);
+        txtAmount = (EditText) findViewById(R.id.txtAmount);
+        txtAmountCashback = (EditText) findViewById(R.id.txtCashbackAmount);
+        txtName = (EditText) findViewById(R.id.txtName);
+        txtMobile = (EditText) findViewById(R.id.txtMobile);
+        txtEmail = (EditText) findViewById(R.id.txtEmail);
+    }
 
-				EzeAPI.cardTransaction(this, REQUESTCODE_CASHBACK, jsonRequest);
-			}catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}else
-			displayToast(mandatoryErrMsg);
-	}
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnInitialize:
+                initEzetap();
+                break;
+            case R.id.btnPrepare:
+                prepareEzetap();
+                break;
+            case R.id.btnWalletTxn:
+                doWalletTxn();
+                break;
+            case R.id.btnSale:
+                doSaleTxn();
+                break;
+            case R.id.btnCashback:
+                doCashbackTxn();
+                break;
+            case R.id.btnCashAtPOS:
+                doCashAtPosTxn();
+                break;
+            case R.id.btnCashTxn:
+                doCashTxn();
+                break;
+            case R.id.btnSearchTxn:
+                searchTxn();
+                break;
+            case R.id.btnVoidTxn:
+                voidTxn();
+                break;
+            case R.id.btnAttachSignature:
+                attachSignature();
+                break;
+            case R.id.btnUpdate:
+                updateDevice();
+                break;
+            case R.id.btnClose:
+                closeEzetap();
+                break;
+            default:
+                break;
+        }
+    }
 
-	private void doCashAtPosTxn() {
-		if(isMandatoryParamsValid()){
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonOptionalParams = new JSONObject();
-			JSONObject jsonReferences = new JSONObject();
-			JSONObject jsonCustomer = new JSONObject();
-			try {				
-				//Building Customer Object
-				jsonCustomer.put("name", txtName.getText().toString().trim());
-				jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
-				jsonCustomer.put("email", txtEmail.getText().toString().trim());
+    private void initEzetap() {
+        JSONObject jsonRequest = new JSONObject();
+        try {
+            jsonRequest.put("demoAppKey", "Enter your demo app key here");
+            jsonRequest.put("prodAppKey", "Enter your prod app key here");
+            jsonRequest.put("merchantName", "Demo");
+            jsonRequest.put("userName", "Demo user");
+            jsonRequest.put("currencyCode", "INR");
+            jsonRequest.put("appMode", "DEMO");
+            jsonRequest.put("captureSignature", "false");
+            jsonRequest.put("prepareDevice", "false");//Set it true if you want to initialize and prepare device at a time
+                                                     // or false if you want to initialize only and prepare device later for card txn.
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        EzeAPI.initialize(this, REQUESTCODE_INIT, jsonRequest);
+    }
 
-				//Building References Object
-				jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+    private void prepareEzetap() {
+        EzeAPI.prepareDevice(this, REQUESTCODE_PREP);
+    }
 
-				//Building Optional params Object
-				jsonOptionalParams.put("amountCashback",txtAmountCashback.getText().toString().trim());
-				jsonOptionalParams.put("amountTip",0.00);
-				jsonOptionalParams.put("references",jsonReferences);
-				jsonOptionalParams.put("customer",jsonCustomer);
+    private void doWalletTxn() {
+        if (isMandatoryParamsValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonOptionalParams = new JSONObject();
+            JSONObject jsonReferences = new JSONObject();
+            JSONObject jsonCustomer = new JSONObject();
+            try {
+                //Building Customer Object
+                jsonCustomer.put("name", txtName.getText().toString().trim());
+                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+                jsonCustomer.put("email", txtEmail.getText().toString().trim());
 
-				//Building final request object
-				jsonRequest.put("amount", 0.00);//Cannot have amount for CASH@POS transaction.
-				jsonRequest.put("mode", "CASH@POS");//This attributes determines the type of transaction
-				jsonRequest.put("options", jsonOptionalParams);
+                //Building References Object
+                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
 
-				EzeAPI.cardTransaction(this, REQUESTCODE_CASHATPOS, jsonRequest);
-			}catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}else
-			displayToast(mandatoryErrMsg);
-	}
+                //Building Optional params Object
+                jsonOptionalParams.put("amountCashback", 0.00);
+                jsonOptionalParams.put("amountTip", 0.00);
+                jsonOptionalParams.put("references", jsonReferences);
+                jsonOptionalParams.put("customer", jsonCustomer);
 
-	private void attachSignature() {
-		if(isTransactionIdValid()){
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonImageObj = new JSONObject();
-			try {
-				//Building Image Object
-				jsonImageObj.put("imageData", "The Base64 Image bitmap string of your siganture goes here");//Cannot have amount for CASH@POS transaction.
-				jsonImageObj.put("imageType", "JPEG");
-				jsonImageObj.put("height", "");//optional
-				jsonImageObj.put("weight", "");//optional
+                //Building final request object
+                jsonRequest.put("amount", txtAmount.getText().toString().trim());
+                jsonRequest.put("options", jsonOptionalParams);
 
-				//Building final request object
-				jsonRequest.put("emiID", "");//pass this field if you have an email Id associated with the transaction
-				jsonRequest.put("tipAmount", 0.00);//optional
-				//jsonRequest.put("image", jsonImageObj); // Pass this attribute when you have a valid captured signature
-				jsonRequest.put("txnId", strTxnId);
+                EzeAPI.walletTransaction(this, REQUESTCODE_WALLET, jsonRequest);
 
-				EzeAPI.attachSignature(this, REQUESTCODE_ATTACHSIGN, jsonRequest);
-			}catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}else
-			displayToast("Inorrect txn Id, please make a Txn.");
-	}
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            displayToast(mandatoryErrMsg);
+        }
+    }
+
+//    private void doCNPTxn() {
+//        if (isMandatoryParamsValid()) {
+//            JSONObject jsonRequest = new JSONObject();
+//            JSONObject jsonOptionalParams = new JSONObject();
+//            JSONObject jsonReferences = new JSONObject();
+//            JSONObject jsonCustomer = new JSONObject();
+//            try {
+//                //Building Customer Object
+//                jsonCustomer.put("name", txtName.getText().toString().trim());
+//                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+//                jsonCustomer.put("email", txtEmail.getText().toString().trim());
+//
+//                //Building References Object
+//                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+//
+//                //Building Optional params Object
+//                jsonOptionalParams.put("amountCashback", 0.00);
+//                jsonOptionalParams.put("amountTip", 0.00);
+//                jsonOptionalParams.put("references", jsonReferences);
+//                jsonOptionalParams.put("customer", jsonCustomer);
+//
+//                //Building final request object
+//                jsonRequest.put("demoAppKey", "2d68f4a8-21d6-41e7-a15d-3b6e048bc492");
+//                jsonRequest.put("prodAppKey", "2d68f4a8-21d6-41e7-a15d-3b6e048bc492");
+//                jsonRequest.put("merchantName", "");
+//                jsonRequest.put("userName", "Demo user");
+//                jsonRequest.put("currencyCode", "INR");
+//                jsonRequest.put("appMode", "DEMO");
+//                jsonRequest.put("captureSignature", "false");
+//                jsonRequest.put("amount", txtAmount.getText().toString().trim());
+//                jsonRequest.put("options", jsonOptionalParams);
+//
+//
+//                EzeAPI.cnpTransaction(this, REQUESTCODE_CNP, jsonRequest);
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            displayToast(mandatoryErrMsg);
+//        }
+//    }
+
+    private void doSaleTxn() {
+        if (isMandatoryParamsValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonOptionalParams = new JSONObject();
+            JSONObject jsonReferences = new JSONObject();
+            JSONObject jsonCustomer = new JSONObject();
+            try {
+                //Building Customer Object
+                jsonCustomer.put("name", txtName.getText().toString().trim());
+                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+                jsonCustomer.put("email", txtEmail.getText().toString().trim());
+
+                //Building References Object
+                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+
+                //Building Optional params Object
+                jsonOptionalParams.put("amountCashback", 0.00);//Cannot have amount cashback in SALE transaction.
+                jsonOptionalParams.put("amountTip", 0.00);
+                jsonOptionalParams.put("references", jsonReferences);
+                jsonOptionalParams.put("customer", jsonCustomer);
+
+                //Building final request object
+                jsonRequest.put("amount", txtAmount.getText().toString().trim());
+                jsonRequest.put("mode", "SALE");//This attributes determines the type of transaction
+                jsonRequest.put("options", jsonOptionalParams);
+
+                EzeAPI.cardTransaction(this, REQUESTCODE_SALE, jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else
+            displayToast(mandatoryErrMsg);
+    }
+
+    private void doCashbackTxn() {
+        if (isMandatoryParamsValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonOptionalParams = new JSONObject();
+            JSONObject jsonReferences = new JSONObject();
+            JSONObject jsonCustomer = new JSONObject();
+            try {
+                //Building Customer Object
+                jsonCustomer.put("name", txtName.getText().toString().trim());
+                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+                jsonCustomer.put("email", txtEmail.getText().toString().trim());
+
+                //Building References Object
+                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+
+                //Building Optional params Object
+                jsonOptionalParams.put("amountCashback", txtAmountCashback.getText().toString().trim());
+                jsonOptionalParams.put("amountTip", 0.00);
+                jsonOptionalParams.put("references", jsonReferences);
+                jsonOptionalParams.put("customer", jsonCustomer);
+
+                //Building final request object
+                jsonRequest.put("amount", txtAmount.getText().toString().trim());
+                jsonRequest.put("mode", "CASHBACK");//This attributes determines the type of transaction
+                jsonRequest.put("options", jsonOptionalParams);
+
+                EzeAPI.cardTransaction(this, REQUESTCODE_CASHBACK, jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else
+            displayToast(mandatoryErrMsg);
+    }
+
+    private void doCashAtPosTxn() {
+        if (isMandatoryParamsValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonOptionalParams = new JSONObject();
+            JSONObject jsonReferences = new JSONObject();
+            JSONObject jsonCustomer = new JSONObject();
+            try {
+                //Building Customer Object
+                jsonCustomer.put("name", txtName.getText().toString().trim());
+                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+                jsonCustomer.put("email", txtEmail.getText().toString().trim());
+
+                //Building References Object
+                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+
+                //Building Optional params Object
+                jsonOptionalParams.put("amountCashback", txtAmountCashback.getText().toString().trim());
+                jsonOptionalParams.put("amountTip", 0.00);
+                jsonOptionalParams.put("references", jsonReferences);
+                jsonOptionalParams.put("customer", jsonCustomer);
+
+                //Building final request object
+                jsonRequest.put("amount", 0.00);//Cannot have amount for CASH@POS transaction.
+                jsonRequest.put("mode", "CASH@POS");//This attributes determines the type of transaction
+                jsonRequest.put("options", jsonOptionalParams);
+
+                EzeAPI.cardTransaction(this, REQUESTCODE_CASHATPOS, jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else
+            displayToast(mandatoryErrMsg);
+    }
+
+    private void doCashTxn() {
+        if (isMandatoryParamsValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonOptionalParams = new JSONObject();
+            JSONObject jsonReferences = new JSONObject();
+            JSONObject jsonCustomer = new JSONObject();
+            try {
+                //Building Customer Object
+                jsonCustomer.put("name", txtName.getText().toString().trim());
+                jsonCustomer.put("mobileNo", txtMobile.getText().toString().trim());
+                jsonCustomer.put("email", txtEmail.getText().toString().trim());
+
+                //Building References Object
+                jsonReferences.put("reference1", txtRefNum.getText().toString().trim());
+
+                //Building Optional params Object
+                jsonOptionalParams.put("amountCashback", 0.00);//Cannot have amount cashback in cash transaction.
+                jsonOptionalParams.put("amountTip", 0.00);
+                jsonOptionalParams.put("references", jsonReferences);
+                jsonOptionalParams.put("customer", jsonCustomer);
+
+                //Building final request object
+                jsonRequest.put("amount", txtAmount.getText().toString().trim());
+                jsonRequest.put("options", jsonOptionalParams);
+                Log.d("param", jsonRequest.toString());
+
+                EzeAPI.cashTransaction(this, REQUESTCODE_CASH, jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else
+            displayToast(mandatoryErrMsg);
+    }
+
+    private void searchTxn() {
+        JSONObject jsonRequest = new JSONObject();
+        try {
+            jsonRequest.put("agentName", "Demo User");
+            jsonRequest.put("startDate", "1/1/2015");
+            jsonRequest.put("endDate", "12/31/2015");
+            jsonRequest.put("txnType", "cash");
+            jsonRequest.put("txnStatus", "void");
+            EzeAPI.searchTransaction(this, REQUESTCODE_SEARCH, jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void voidTxn() {
+        if (isTransactionIdValid()) {
+            EzeAPI.voidTransaction(this, REQUESTCODE_VOID, strTxnId);
+        } else
+            displayToast("Inorrect txn Id, please make a Txn.");
+    }
+
+    private void attachSignature() {
+        if (isTransactionIdValid()) {
+            JSONObject jsonRequest = new JSONObject();
+            JSONObject jsonImageObj = new JSONObject();
+            try {
+                //Building Image Object
+                jsonImageObj.put("imageData", "The Base64 Image bitmap string of your siganture goes here");//Cannot have amount for CASH@POS transaction.
+                jsonImageObj.put("imageType", "JPEG");
+                jsonImageObj.put("height", "");//optional
+                jsonImageObj.put("weight", "");//optional
+
+                //Building final request object
+                jsonRequest.put("emiID", "");//pass this field if you have an email Id associated with the transaction
+                jsonRequest.put("tipAmount", 0.00);//optional
+                //jsonRequest.put("image", jsonImageObj); // Pass this attribute when you have a valid captured signature
+                jsonRequest.put("txnId", strTxnId);
+
+                EzeAPI.attachSignature(this, REQUESTCODE_ATTACHSIGN, jsonRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else
+            displayToast("Inorrect txn Id, please make a Txn.");
+    }
+
+    private void updateDevice() {
+        EzeAPI.updateDevice(this, REQUESTCODE_UPDATE);
+    }
+
+    private void closeEzetap() {
+        EzeAPI.close(this, REQUESTCODE_CLOSE);
+    }
+
+    private boolean isMandatoryParamsValid() {
+        if (txtAmount.getText().toString().equalsIgnoreCase("") || txtRefNum.getText().toString().equalsIgnoreCase(""))
+            return false;
+        else
+            return true;
+    }
+
+    private boolean isTransactionIdValid() {
+        if (strTxnId == null)
+            return false;
+        else
+            return true;
+    }
+
+    private void displayToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (intent != null && intent.hasExtra("response"))
+            Toast.makeText(this, intent.getStringExtra("response"), Toast.LENGTH_LONG).show();
+        switch (requestCode) {
+            case REQUESTCODE_CASH:
+            case REQUESTCODE_CASHBACK:
+            case REQUESTCODE_CASHATPOS:
+            case REQUESTCODE_WALLET:
+//            case REQUESTCODE_CNP:
+            case REQUESTCODE_SALE:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        JSONObject response = new JSONObject(intent.getStringExtra("response"));
+                        response = response.getJSONObject("result");
+                        response = response.getJSONObject("txn");
+                        strTxnId = response.getString("txnId");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+
+    }
 }
