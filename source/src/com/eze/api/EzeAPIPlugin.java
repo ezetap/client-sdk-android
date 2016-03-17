@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.widget.Toast;
-import com.eze.api.EzeAPIConstants.EzetapErrors;
 
 public class EzeAPIPlugin extends CordovaPlugin {
 

@@ -21,6 +21,7 @@ package com.ezeapi.sample;
 
 import org.apache.cordova.CordovaActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 public class EzeCordovaSampleActivity extends CordovaActivity
@@ -31,5 +32,11 @@ public class EzeCordovaSampleActivity extends CordovaActivity
         super.onCreate(savedInstanceState);
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
+    }
+    @Override
+    public void onBackPressed() {
+    	Intent intent = new Intent(this, MainActivity.class);
+    	startActivity(intent);
+    	finish();
     }
 }

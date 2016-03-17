@@ -11,9 +11,16 @@ var btnVoidTransaction = document.getElementById('btnVoidTransaction');
 var btnAttachSignature = document.getElementById('btnAttachSignature');
 var btnUpdate = document.getElementById('btnUpdate');
 var btnLogout = document.getElementById('btnLogout');
-
 var msgDiv = document.getElementById('messageDesc');
 var transactionID = "";
+
+
+document.addEventListener('backbutton', 
+						   function(e){
+									e.preventDefault();
+									navigator.app.exitApp();
+									},
+						   false);
 
 initBtn.onclick = function(){
 	var ezeTapSuccessCallBack = function(response){
@@ -29,8 +36,8 @@ initBtn.onclick = function(){
 		$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 	};
 	var EzetapConfig = {
-			"demoAppKey":"Enter your demo app key here",
-			"prodAppKey":"Enter your prod app key here",
+			"demoAppKey":"Enter your demo key here",
+			"prodAppKey":"Enter your prod key here",
 			"merchantName":"Merchant name",//The name of your organization
 			"userName":"User name",//Name of the user or agent
 			"currencyCode":"INR",//Defaulted to INR. Set to appropriate currency code your application uses.
@@ -356,42 +363,6 @@ btnLogout.onclick = function(){
 	};
 	cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","close",[]);
 }
-
-//payBtnCNP.onclick = function(){
-//    var refNum = $("#referenceNumber").val();
-//	var amount = $("#amount").val();
-//	if(refNum!="" && amount!=""){
-//		var ezeTapSuccessCallBack = function(response){
-//			$("#formData").hide();
-//			$("#messageDiv").show();
-//			$("#messageTag").text("Transaction successful");
-//			transactionID = JSON.parse(response).result.txn.txnId;
-//			$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));
-//		};
-//		var ezeTapFailureCallBack = function(response){
-//			$("#formData").hide();
-//			$("#messageDiv").show();
-//			$("#messageTag").text("Transaction failed");
-//			$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));
-//		};
-//		var Request = {
-//        				"amount": amount,
-//        				"options": {
-//        					"references": {
-//        						"reference1":"PS123"
-//        					},
-//        					"customer": {
-//        						"name":$("#name").val(),
-//        						"mobileNo":$("#mobile").val(),
-//        						"email":$("#email").val()
-//        					}
-//        				},
-//        };
-//        cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","cnpTransaction",[Request]);
-//	}else{
-//	    alert("Please fill up mandatory fields.");
-//	}
-//}
 
 btnUpdate.onclick = function(){
     var ezeTapSuccessCallBack = function(response){
