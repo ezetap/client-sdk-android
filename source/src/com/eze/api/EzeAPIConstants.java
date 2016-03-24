@@ -76,6 +76,7 @@ public class EzeAPIConstants {
 	public static final String KEY_PAYMENT_MODE_CASH_AT_POS = "CASH@POS";
 	public static final String KEY_PRE_SELECTED_TERMINAL_LABEL = "terminalLabel";
 	public static final String KEY_OPTIONS = "options";
+	public static final String KEY_EMI_ELIGIBLE = "markEMINotEligible";
 	public static final String KEY_REFERENCES1 = "reference1";
 	public static final String KEY_REFERENCES2 = "reference2";
 	public static final String KEY_REFERENCES3 = "reference3";
@@ -83,7 +84,7 @@ public class EzeAPIConstants {
 	// Signature Image Key Names
 	public static final String KEY_IMAGE = "image";
 	public static final String KEY_IMAGE_DATA = "imageData";
-	public static final String KEY_EMI_ID = "emiID";
+	public static final String KEY_EMI_ID = "emiId";
 	public static final String KEY_IMAGE_TYPE = "imageType";
 
 	// Card object key names
@@ -98,10 +99,12 @@ public class EzeAPIConstants {
 	public static final String KEY_TXN_CARD_BRAND = "paymentCardBrand";
 	public static final String KEY_CARD_BRAND = "cardBrand";
 	// Check object key names
-	public static final String KEY_CHEQUE_TYPE = "chequeType";
+	public static final String KEY_CHEQUE = "cheque";
+	public static final String KEY_BANK_CODE = "bankCode";
 	public static final String KEY_CHEQUE_NUMBER = "chequeNumber";
 	public static final String KEY_CHEQUE_DATE = "chequeDate";
-	public static final String KEY_CHEQUE_BANK = "chequeBank";
+	public static final String KEY_BANK_NAME = "bankName";
+	public static final String KEY_BANK_ACCOUNT_NUMBER = "bankAccountNo";
 
 	/**
 	 * Variable used when user selects LOGIN API.
@@ -166,14 +169,13 @@ public class EzeAPIConstants {
 	 */
 	public static final int WORKFLOW_DO_CHEQUETRANSACTION = 17;
 	/**
-	 * Variable used when user selects CHEQUE PAYMENT API.
+	 * Variable used when user selects wallet PAYMENT API.
 	 */
 	public static final int WORKFLOW_DO_WALLETTRANSACTION = 18;
 	/**
-	 * Variable used when user selects CHEQUE PAYMENT API.
+	 * Variable used when user selects prepare device API.
 	 */
 	public static final int WORKFLOW_PREPARE_DEVICE = 19;
-
 	/**
 	 * Variable used when user selects Update API.
 	 */

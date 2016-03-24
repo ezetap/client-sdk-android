@@ -247,6 +247,40 @@ public interface EzetapPayApi {
 	 */
 	void startCashPayment(Activity context, int reqCode, String username, double amount, String orderNumber, double tip, String customerMobile, String customerName);
 
+	/**
+	 * To initiate a cash payment transaction, application should call this
+	 * method with following parameters:
+	 * 
+	 * @param context
+	 *            - Calling activity's context
+	 * @param reqCode
+	 *            - Request code for handling response
+	 * @param username
+	 *            - Ezetap username
+	 * @param amount
+	 *            - Transaction amount
+	 * @param orderNumber
+	 *            - External Reference associated with the transaction
+	 * @param mobile
+	 *            - Mobile number of customer (optional)
+ 	 * @param customerName
+	 *            - Name of customer (optional)            
+	 * @param emailID
+	 *            - Email Address of customer (optional)
+	 * @param externalReference1
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param externalReference2
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param appData
+	 *            - Opaque App specific data (optional)
+	 * @param addData
+	 *            - Additional App specific data (optional)<br>
+	 *            If option to convert to EMI is to be supressed, add <tt>markEMINotEligible</tt> as <tt>true</tt> to this as boolean value. 
+	 *            
+	 */
+	void startCashPayment(Activity context, int reqCode, String username, double amount, String orderNumber, String mobile, String customerName, String emailID, String externalReference2, String externalReference3, Hashtable<String, Object> appData, Hashtable<String, Object> addData);	
 	
 	/**
 	 * To initiate a wallet payment transaction, application should call this
@@ -274,7 +308,94 @@ public interface EzetapPayApi {
 	 *            
 	 */
 	void startWalletPayment(Activity context, int reqCode, String username, double amount, String orderNumber, String customerMobile, String customerName, String emailAddress, String[] labels);
-	
+
+	/**
+	 * To initiate a wallet payment transaction, application should call this
+	 * method with following parameters:
+	 * 
+	 * @param context
+	 *            - Calling activity's context
+	 * @param reqCode
+	 *            - Request code for handling response
+	 * @param username
+	 *            - Ezetap username
+	 * @param amount
+	 *            - Transaction amount
+	 * @param orderNumber
+	 *            - External Reference associated with the transaction
+	 * @param mobile
+	 *            - Mobile number of customer (optional)
+	 * @param emailID
+	 *            - Email Address of customer (optional)
+  	 * @param customerName
+	 *            - Name of customer (optional)            
+	 * @param externalReference2
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param externalReference3
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param appData
+	 *            - Opaque App specific data (optional)
+	 * @param addData
+	 *            - Additional App specific data (optional)<br>
+	 *            If option to convert to EMI is to be supressed, add <tt>markEMINotEligible</tt> as <tt>true</tt> to this as boolean value. 
+	 * @param labels
+	 *            - Labels of customer. For wallet transactions label shared by ezetap are mandatory. 
+	 *            Format of shared label - WALLET_USER_{ID} (e.g. WALLET_USER_1001)
+	 */
+	void startWalletPayment(Activity context, int reqCode, String username, double amount, String orderNumber, String mobile, String emailID, String customerName, String externalReference2, String externalReference3, Hashtable<String, Object> appData, Hashtable<String, Object> addData, String[] labels);
+
+	/**
+	 * To initiate a wallet payment transaction, application should call this
+	 * method with following parameters:
+	 * 
+	 * @param context
+	 *            - Calling activity's context
+	 * @param reqCode
+	 *            - Request code for handling response
+	 * @param username
+	 *            - Ezetap username
+	 * @param amount
+	 *            - Transaction amount
+	 * @param orderNumber
+	 *            - External Reference associated with the transaction
+	 * @param mobile
+	 *            - Mobile number of customer (optional)
+	 * @param emailID
+	 *            - Email Address of customer (optional)
+   	 * @param customerName
+	 *            - Name of customer (optional)
+   	 * @param chequeNumber
+	 *            - Cheque number
+   	 * @param bankCode
+	 *            - IFSC code of the bank (optional)	 
+   	 * @param bankName
+	 *            - Name of the bank who issued the cheque
+   	 * @param bankAccountNo
+	 *            - Account number of the payee. (optional)
+   	 * @param chequeDate
+	 *            - Date mentioned in the cheque (YYYY-MM-DD format)	 
+	 * @param externalReference2
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param externalReference3
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param appData
+	 *            - Opaque App specific data (optional)
+	 * @param addData
+	 *            - Additional App specific data (optional)<br>
+	 *            If option to convert to EMI is to be supressed, add <tt>markEMINotEligible</tt> as <tt>true</tt> to this as boolean value. 
+	 * @param labels
+	 *            - Labels of customer. For wallet transactions label shared by ezetap are mandatory. 
+	 *            Format of shared label - WALLET_USER_{ID} (e.g. WALLET_USER_1001)
+	 */
+	void startChequePayment(Activity context, int reqCode, String username, double amount, 
+		String orderNumber, String mobile, String emailID, String customerName,
+		String chequeNumber, String bankCode, String bankName, String bankAccountNo, String chequeDate,
+		String externalReference2, String externalReference3, 
+		Hashtable<String, Object> appData, Hashtable<String, Object> addData);	
 	/**
 	 * To initiate a void transaction request, application should call this
 	 * method with following parameters:
@@ -561,6 +682,6 @@ public interface EzetapPayApi {
 	 *            If option to convert to EMI is to be suppressed, add <tt>markEMINotEligible</tt> as <tt>true</tt> to this as boolean value. 
 	 *            
 	 */
-	void startCNPPayment(Activity context, int reqCode, String cnpURL, String username, double amount, String orderNumber, String mobile, String emailID, String externalReference2, String externalReference3, Hashtable<String, Object> appData, Hashtable<String, Object> additionalData);
+	void startCNPPayment(Activity context, int reqCode, String cnpURL,  String username, double amount, String orderNumber, String mobile, String emailID, String externalReference2, String externalReference3, Hashtable<String, Object> appData, Hashtable<String, Object> additionalData);
 
 }

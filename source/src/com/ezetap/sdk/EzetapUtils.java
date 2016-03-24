@@ -181,6 +181,7 @@ public class EzetapUtils {
 	protected AlertDialog showDownloadDialog(final Activity context, final String username, final String appKey) {
 		AlertDialog.Builder downloadDialog = new AlertDialog.Builder(context);
 		downloadDialog.setTitle("Install Ezetap Service Application");
+		downloadDialog.setCancelable(false);
 		downloadDialog.setMessage("This application requires Ezetap Service Application. Would you like to install it?");
 		downloadDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
@@ -210,6 +211,7 @@ public class EzetapUtils {
 	protected AlertDialog showDownloadDialog1(final Activity context, final String username, final String appKey) {
 		AlertDialog.Builder downloadDialog = new AlertDialog.Builder(context);
 		downloadDialog.setTitle("Install Compatible Ezetap Service Application");
+		downloadDialog.setCancelable(false);
 		downloadDialog.setMessage("This SDK requires new Ezetap Service Application which supports new features added in SDK. Would you like to install it?");
 		downloadDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override

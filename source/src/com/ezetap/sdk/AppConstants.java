@@ -17,8 +17,8 @@ import com.ezetap.sdk.EzeConstants.LoginAuthMode;
 
 public class AppConstants {
 	public static final String SDK_DISPLAY_VERSION = "2.0.12";
-	public static  String APP_ID = "ezetap_android_sdk";
-	public static  String APP_NAME = "Ezetap Android SDK";
+	public static String APP_ID = "ezetap_android_sdk";
+	public static String APP_NAME = "Ezetap Android SDK";
 	public static final String SDK_VERSION = "12";
 	public static final int COMPATIBLE_SERVICE_APP_VERSION_CODE = 125;
 
@@ -74,7 +74,8 @@ public class AppConstants {
 	public static final int REQ_CODE_RELEASE_PREAUTH = 2009;
 	public static final int REQ_CODE_PAY_WALLET = 2010;
 	public static final int REQ_CODE_PAY_CNP = 2011;
-
+	public static final int REQ_CODE_PAY_CHEQUE = 2012;
+	
 	public static final int REQ_CODE_REGISTER_DONGLE = 3001;
 	public static final int REQ_CODE_CHECK_UPDATE = 3002;
 	public static final int REQ_CODE_CHECK_INCOMPLETE_TXN = 3003;

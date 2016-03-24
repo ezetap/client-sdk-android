@@ -1,7 +1,8 @@
 var initBtn = document.getElementById('btnInitialize');
 var btnPrepDevice = document.getElementById('btnPrepDevice');
 var payBtnWallet = document.getElementById('btnWalletTxn');
-//var payBtnCNP = document.getElementById('btnCNPTxn');
+var payBtnCheque = document.getElementById('btnChqTxn');
+// var payBtnCNP = document.getElementById('btnCNPTxn');
 var payBtn = document.getElementById('btnPaySale');
 var payBtnCashback = document.getElementById('btnPayCashback');
 var payBtnCashAtPOS = document.getElementById('btnPayCashAtPOS');
@@ -36,15 +37,19 @@ initBtn.onclick = function(){
 		$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 	};
 	var EzetapConfig = {
-			"demoAppKey":"Enter your demo key here",
-			"prodAppKey":"Enter your prod key here",
-			"merchantName":"Merchant name",//The name of your organization
-			"userName":"User name",//Name of the user or agent
-			"currencyCode":"INR",//Defaulted to INR. Set to appropriate currency code your application uses.
-			"appMode":"DEMO",//Accepts the value DEMO, PROD and PREPROD
-			"captureSignature":"false",// Set it to TRUE if you wish Ezetap to capture signature
-			"prepareDevice": "false",//Set it true if you want to initialize and prepare device at a time
-			                        // or false if you want to initialize only and prepare device later for card txn.
+			"demoAppKey":"Enter your demo app key",
+			"prodAppKey":"Enter your prod app key",
+			"merchantName":"Merchant name",// The name of your organization
+			"userName":"User name",// Name of the user or agent
+			"currencyCode":"INR",// Defaulted to INR. Set to appropriate
+									// currency code your application uses.
+			"appMode":"DEMO",// Accepts the value DEMO, PROD and PREPROD
+			"captureSignature":"false",// Set it to TRUE if you wish Ezetap to
+										// capture signature
+			"prepareDevice": "false",// Set it true if you want to initialize
+										// and prepare device at a time
+			                        // or false if you want to initialize only
+									// and prepare device later for card txn.
 	};
 	cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","initialize",
 			[EzetapConfig]);
@@ -71,6 +76,11 @@ msgDiv.onclick = function(){
 	$("#messageDiv").hide();
 	$("#referenceNumber").val("");
 	$("#amount").val("");
+	$("#chqNum").val("");
+	$("#bankCode").val("");
+	$("#bankName").val("");
+	$("#bankAccNum").val("");
+	$("#chqDate").val("");
 	$("#comments").val("");
 	$("#amountCashBack").val("");
 }
@@ -216,7 +226,7 @@ payBtnCash.onclick = function(){
 				"amount": amount,
 				"options": {
 					"references": {
-						"reference1":"PS123"
+						"reference1":refNum
 					},
 					"customer": {
 						"name":$("#name").val(),
@@ -251,7 +261,7 @@ payBtnWallet.onclick = function(){
         				"amount": amount,
         				"options": {
         					"references": {
-        						"reference1":"PS123"
+        						"reference1":refNum
         					},
         					"customer": {
         						"name":$("#name").val(),
@@ -261,6 +271,55 @@ payBtnWallet.onclick = function(){
         				},
         };
         cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","walletTransaction",[Request]);
+	}else{
+	    alert("Please fill up mandatory fields.");
+	}
+}
+
+payBtnCheque.onclick = function(){
+    var refNum = $("#referenceNumber").val();
+	var amount = $("#amount").val();
+	var chqNum = $("#chqNum").val();
+	var bankCode = $("#bankCode").val();
+	var bankName = $("#bankName").val();
+	var bankAcNum = $("#bankAccNum").val();
+	var chqDate = $("#chqDate").val();
+	if(refNum!="" && amount!="" && chqNum!="" && bankCode!="" && bankName!="" && bankAcNum!="" && chqDate!=""){
+		var ezeTapSuccessCallBack = function(response){
+			$("#formData").hide();
+			$("#messageDiv").show();
+			$("#messageTag").text("Transaction successful");
+			transactionID = JSON.parse(response).result.txn.txnId;
+			$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));
+		};
+		var ezeTapFailureCallBack = function(response){
+			$("#formData").hide();
+			$("#messageDiv").show();
+			$("#messageTag").text("Transaction failed");
+			$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));
+		};
+		var Request = {
+        				"amount": amount,
+        				"options": {
+        					"references": {
+        						"reference1":refNum
+        					},
+        					"customer": {
+        						"name":$("#name").val(),
+        						"mobileNo":$("#mobile").val(),
+        						"email":$("#email").val()
+        					}
+        				},
+        				"cheque": {
+        				    "chequeNumber": chqNum,
+        				    "bankCode": bankCode,
+        				    "bankName": bankName,
+        				    "bankAccountNo": bankAcNum,
+        				    "chequeDate": chqDate
+        				  },
+        				  "userName": "Demo user"
+        };
+        cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","chequeTransaction",[Request]);
 	}else{
 	    alert("Please fill up mandatory fields.");
 	}
@@ -324,14 +383,12 @@ btnAttachSignature.onclick = function(){
 	var imgElem = document.getElementById('sampleImg');
 	var Request= {
 			"txnId": transactionID,
-			//"tipAmount": 0.00,
-			//"emiID":"852134799",
-			/*"image": {
-				"imageData": getBase64Image(imgElem),
-				"imageType": "PNG",
-				"height": "",
-				"weight": ""
-			}*/
+			// "tipAmount": 0.00,
+			// "emiID":"852134799",
+			/*
+			 * "image": { "imageData": getBase64Image(imgElem), "imageType":
+			 * "PNG", "height": "", "weight": "" }
+			 */
 	};
 	if(transactionID == "" || transactionID == undefined || transactionID == null)
 		alert("Unable to find transaction ID, please make a transaction.");

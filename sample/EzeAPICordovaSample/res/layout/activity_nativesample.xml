@@ -1,22 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="#E9F3F5"
-                tools:context="com.ezeapi.nativesample.PaymentActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="#E9F3F5"
+    tools:context="com.ezeapi.nativesample.PaymentActivity" >
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <EditText
                 android:id="@+id/txtRefNum"
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Reference Number*"
-                android:inputType="number"/>
+                android:inputType="number" />
 
             <EditText
                 android:id="@+id/txtAmount"
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Amount*"
-                android:inputType="number"/>
+                android:inputType="number" />
 
             <EditText
                 android:id="@+id/txtCashbackAmount"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Cashback Amount"
-                android:inputType="number"/>
+                android:inputType="number" />
 
             <EditText
                 android:id="@+id/txtName"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Customer Name"
-                android:inputType="textNoSuggestions"/>
+                android:inputType="textNoSuggestions" />
 
             <EditText
                 android:id="@+id/txtMobile"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Customer Mobile"
-                android:inputType="phone"/>
+                android:inputType="phone" />
 
             <EditText
                 android:id="@+id/txtEmail"
@@ -64,8 +64,47 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="Customer Email"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textEmailAddress" />
 
+            <EditText
+                android:id="@+id/txtChqNum"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Cheque number*"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/txtBankCode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Bank code*"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/txtBankName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Bank name*"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/txtAcNum"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Bank account number*"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/txtChqDate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="cheque date*"
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/btnInitialize"
@@ -75,7 +114,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Initialize"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnPrepare"
@@ -85,8 +124,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Prepare Device"
-                android:textColor="@android:color/white"/>
-
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnWalletTxn"
@@ -96,17 +134,27 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Wallet Transaction"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
-            <!--<Button-->
-                <!--android:id="@+id/btnCNPTxn"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="5dp"-->
-                <!--android:background="@drawable/round_corner"-->
-                <!--android:elevation="3dp"-->
-                <!--android:text="CNP Transaction"-->
-                <!--android:textColor="@android:color/white"/>-->
+            <Button
+                android:id="@+id/btnChequeTxn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/round_corner"
+                android:elevation="3dp"
+                android:text="Cheque Payment"
+                android:textColor="@android:color/white" />
+
+            <!-- <Button -->
+            <!-- android:id="@+id/btnCNPTxn" -->
+            <!-- android:layout_width="fill_parent" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:layout_marginTop="5dp" -->
+            <!-- android:background="@drawable/round_corner" -->
+            <!-- android:elevation="3dp" -->
+            <!-- android:text="CNP Transaction" -->
+            <!-- android:textColor="@android:color/white"/> -->
 
             <Button
                 android:id="@+id/btnSale"
@@ -116,7 +164,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Card Transaction - Sale"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnCashback"
@@ -126,7 +174,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Card Transaction - Cashback"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnCashAtPOS"
@@ -136,7 +184,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Card Transaction - Cash@POS"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnCashTxn"
@@ -146,7 +194,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Cash Transaction"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnSearchTxn"
@@ -156,7 +204,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Search Transaction"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnVoidTxn"
@@ -166,7 +214,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Void Transaction"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnAttachSignature"
@@ -176,7 +224,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Attach Signature"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnUpdate"
@@ -186,7 +234,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Update"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btnClose"
@@ -196,7 +244,7 @@
                 android:background="@drawable/round_corner"
                 android:elevation="3dp"
                 android:text="Close"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>
 

@@ -21,6 +21,7 @@ public class EzeNativeSampleActivity extends Activity implements
 	private final int REQUESTCODE_PREP = 10002;
 
 	private final int REQUESTCODE_WALLET = 10003;
+	private final int REQUESTCODE_CHEQUE = 10004;
 	private final int REQUESTCODE_SALE = 10006;
 	private final int REQUESTCODE_CASHBACK = 10007;
 	private final int REQUESTCODE_CASHATPOS = 10008;
@@ -33,12 +34,13 @@ public class EzeNativeSampleActivity extends Activity implements
 	private final int REQUESTCODE_CLOSE = 10014;
 
 	private EditText txtRefNum, txtAmount, txtAmountCashback, txtName,
-			txtMobile, txtEmail;
+			txtMobile, txtEmail, txtChqNum, txtBankCode, txtBankName,
+			txtBankACNum, txtChqDate;
 	private Button btnInit, btnPrep, btnWalletTxn, btnCardSale,
-			btnCardCashback, btnCardCashAtPOS, btnCash, btnSearchTxn,
-			btnVoidTxn, btnAttachSign, btnUpdate, btnClose;
+			btnCardCashback, btnCardCashAtPOS, btnChqTxn, btnCash,
+			btnSearchTxn, btnVoidTxn, btnAttachSign, btnUpdate, btnClose;
 
-	private String strTxnId = null;
+	private String strTxnId = null, emiID = null;
 	private String mandatoryErrMsg = "Please fill up mandatory params.";
 
 	@Override
@@ -54,6 +56,9 @@ public class EzeNativeSampleActivity extends Activity implements
 
 		btnWalletTxn = ((Button) findViewById(R.id.btnWalletTxn));
 		btnWalletTxn.setOnClickListener(this);
+
+		btnChqTxn = ((Button) findViewById(R.id.btnChequeTxn));
+		btnChqTxn.setOnClickListener(this);
 
 		btnCardSale = ((Button) findViewById(R.id.btnSale));
 		btnCardSale.setOnClickListener(this);
@@ -88,6 +93,11 @@ public class EzeNativeSampleActivity extends Activity implements
 		txtName = (EditText) findViewById(R.id.txtName);
 		txtMobile = (EditText) findViewById(R.id.txtMobile);
 		txtEmail = (EditText) findViewById(R.id.txtEmail);
+		txtChqNum = (EditText) findViewById(R.id.txtChqNum);
+		txtBankCode = (EditText) findViewById(R.id.txtBankCode);
+		txtBankName = (EditText) findViewById(R.id.txtBankName);
+		txtBankACNum = (EditText) findViewById(R.id.txtAcNum);
+		txtChqDate = (EditText) findViewById(R.id.txtChqDate);
 	}
 
 	@Override
@@ -101,6 +111,9 @@ public class EzeNativeSampleActivity extends Activity implements
 			break;
 		case R.id.btnWalletTxn:
 			doWalletTxn();
+			break;
+		case R.id.btnChequeTxn:
+			doChequeTxn();
 			break;
 		case R.id.btnSale:
 			doSaleTxn();
@@ -139,9 +152,9 @@ public class EzeNativeSampleActivity extends Activity implements
 		JSONObject jsonRequest = new JSONObject();
 		try {
 			jsonRequest.put("demoAppKey",
-					"Enter your demo key here");
+					"Enter your demo app key");
 			jsonRequest.put("prodAppKey",
-					"Enter your prod key here");
+					"Enter your prod app key");
 			jsonRequest.put("merchantName", "Demo");
 			jsonRequest.put("userName", "Demo user");
 			jsonRequest.put("currencyCode", "INR");
@@ -199,6 +212,64 @@ public class EzeNativeSampleActivity extends Activity implements
 		} else {
 			displayToast(mandatoryErrMsg);
 		}
+	}
+
+	private void doChequeTxn() {
+		if (isMandatoryParamsValidForChq()) {
+			JSONObject jsonRequest = new JSONObject();
+			JSONObject jsonOptionalParams = new JSONObject();
+			JSONObject jsonReferences = new JSONObject();
+			JSONObject jsonCheque = new JSONObject();
+			JSONObject jsonCustomer = new JSONObject();
+			try {
+				// Building Customer Object
+				jsonCustomer.put("name", txtName.getText().toString().trim());
+				jsonCustomer.put("mobileNo", txtMobile.getText().toString()
+						.trim());
+				jsonCustomer.put("email", txtEmail.getText().toString().trim());
+
+				// Building References Object
+				jsonReferences.put("reference1", txtRefNum.getText().toString()
+						.trim());
+
+				// Building Cheque Object
+				jsonCheque.put("chequeNumber", txtChqNum.getText().toString()
+						.trim());
+				jsonCheque.put("bankCode", txtBankCode.getText().toString()
+						.trim());
+				jsonCheque.put("bankName", txtBankName.getText().toString()
+						.trim());
+				jsonCheque.put("bankAccountNo", txtBankACNum.getText()
+						.toString().trim());
+				jsonCheque.put("chequeDate", txtChqDate.getText().toString()
+						.trim());
+
+				// Building Optional params Object
+				jsonOptionalParams.put("amountCashback", 0.00);// Cannot have
+																// amount
+																// cashback in
+																// SALE
+																// transaction.
+				jsonOptionalParams.put("amountTip", 0.00);
+				jsonOptionalParams.put("references", jsonReferences);
+				jsonOptionalParams.put("customer", jsonCustomer);
+
+				// Building final request object
+				jsonRequest
+						.put("amount", txtAmount.getText().toString().trim());
+				jsonRequest.put("mode", "SALE");// This attributes determines
+												// the type of transaction
+				jsonRequest.put("options", jsonOptionalParams);
+				jsonRequest.put("cheque", jsonCheque);
+				jsonRequest.put("userName", "Demo user");
+				Log.d("request", jsonRequest.toString());
+
+				EzeAPI.chequeTransaction(this, REQUESTCODE_CHEQUE, jsonRequest);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		} else
+			displayToast(mandatoryErrMsg);
 	}
 
 	private void doSaleTxn() {
@@ -404,7 +475,8 @@ public class EzeNativeSampleActivity extends Activity implements
 				jsonImageObj.put("weight", "");// optional
 
 				// Building final request object
-				jsonRequest.put("emiID", "");// pass this field if you have an
+				jsonRequest.put("emiId", emiID);// pass this field if you have
+												// an
 												// email Id associated with the
 												// transaction
 				jsonRequest.put("tipAmount", 0.00);// optional
@@ -431,6 +503,19 @@ public class EzeNativeSampleActivity extends Activity implements
 
 	private boolean isMandatoryParamsValid() {
 		if (txtAmount.getText().toString().equalsIgnoreCase("")
+				|| txtRefNum.getText().toString().equalsIgnoreCase(""))
+			return false;
+		else
+			return true;
+	}
+
+	private boolean isMandatoryParamsValidForChq() {
+		if (txtAmount.getText().toString().equalsIgnoreCase("")
+				|| txtChqDate.getText().toString().equalsIgnoreCase("")
+				|| txtBankACNum.getText().toString().equalsIgnoreCase("")
+				|| txtBankName.getText().toString().equalsIgnoreCase("")
+				|| txtBankCode.getText().toString().equalsIgnoreCase("")
+				|| txtChqNum.getText().toString().equalsIgnoreCase("")
 				|| txtRefNum.getText().toString().equalsIgnoreCase(""))
 			return false;
 		else
@@ -469,6 +554,7 @@ public class EzeNativeSampleActivity extends Activity implements
 					response = response.getJSONObject("result");
 					response = response.getJSONObject("txn");
 					strTxnId = response.getString("txnId");
+					emiID = response.getString("emiId");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -480,6 +566,7 @@ public class EzeNativeSampleActivity extends Activity implements
 		}
 
 	}
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();

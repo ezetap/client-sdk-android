@@ -71,7 +71,26 @@ public class EzeAPI {
 		sendRequestIntent(context, "walletTransaction",
 				returnRequestParams(requestObject), requestCode);
 	}
-
+	
+	/**
+	 * Method to start a cheque transaction
+	 * 
+	 * @param Context
+	 *            context - Context of the calling Activity, the result will be
+	 *            supplied to the onActivityResult method of the calling
+	 *            Activity.
+	 * @param int requestCode - Request code you wish to handle for the result
+	 *        in onActivityResult method.
+	 * @param JSONObject
+	 *            requestObject - The request object as defined in the API
+	 *            documentation
+	 */
+	public static void chequeTransaction(Context context, int requestCode,
+			JSONObject requestObject) {
+		sendRequestIntent(context, "chequeTransaction",
+				returnRequestParams(requestObject), requestCode);
+	}
+	
 	/**
 	 * Method to start a card transaction
 	 * 

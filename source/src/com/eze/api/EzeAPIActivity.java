@@ -125,6 +125,19 @@ public class EzeAPIActivity extends Activity {
 							EzetapErrors.ERROR_INIT_REQUIRED.getErrorMessage());
 				}
 				break;
+			case EzeAPIConstants.WORKFLOW_DO_CHEQUETRANSACTION:
+				if (EzetapUserConfig.getEzeUserConfig() != null) {
+					if (findTargetAppPackage(this) != null) {
+						initiateChequePayment(new JSONArray(APIParams));
+					} else {
+						validateDeviceFirmware(new JSONArray(APIParams));
+					}
+				} else {
+					ezetapErrorCallBack(
+							EzetapErrors.ERROR_INIT_REQUIRED.getErrorCode(),
+							EzetapErrors.ERROR_INIT_REQUIRED.getErrorMessage());
+				}
+				break;
 			case EzeAPIConstants.WORKFLOW_DO_CARDTRANSACTION:
 				if (EzetapUserConfig.getEzeUserConfig() != null) {
 					if (findTargetAppPackage(this) != null) {
@@ -151,19 +164,7 @@ public class EzeAPIActivity extends Activity {
 							EzetapErrors.ERROR_INIT_REQUIRED.getErrorMessage());
 				}
 				break;
-			case EzeAPIConstants.WORKFLOW_DO_CHEQUETRANSACTION:
-				if (EzetapUserConfig.getEzeUserConfig() != null) {
-					if (findTargetAppPackage(this) != null) {
-						initiateChequePayment(new JSONArray(APIParams));
-					} else {
-						validateDeviceFirmware(new JSONArray(APIParams));
-					}
-				} else {
-					ezetapErrorCallBack(
-							EzetapErrors.ERROR_INIT_REQUIRED.getErrorCode(),
-							EzetapErrors.ERROR_INIT_REQUIRED.getErrorMessage());
-				}
-				break;
+
 			case EzeAPIConstants.WORKFLOW_GET_TRANSACTIONHISTORY:
 				if (EzetapUserConfig.getEzeUserConfig() != null) {
 					if (findTargetAppPackage(this) != null) {
@@ -271,6 +272,8 @@ public class EzeAPIActivity extends Activity {
 			return EzeAPIConstants.WORKFLOW_PREPARE_DEVICE;
 		if (apiName.equalsIgnoreCase("walletTransaction"))
 			return EzeAPIConstants.WORKFLOW_DO_WALLETTRANSACTION;
+		if (apiName.equalsIgnoreCase("chequeTransaction"))
+			return EzeAPIConstants.WORKFLOW_DO_CHEQUETRANSACTION;
 		if (apiName.equalsIgnoreCase("cardTransaction"))
 			return EzeAPIConstants.WORKFLOW_DO_CARDTRANSACTION;
 		if (apiName.equalsIgnoreCase("cashTransaction"))
@@ -700,8 +703,12 @@ public class EzeAPIActivity extends Activity {
 							EzetapUserConfig.getUserName(), amount,
 							getOrderNumber(jsonObject),
 							getMobileNumber(jsonObject),
+							getEmailID(jsonObject),
 							getCustomerName(jsonObject),
-							getEmailID(jsonObject), getLabels());
+							getExternalReference1(jsonObject),
+							getExternalReference2(jsonObject),
+							new Hashtable<String, Object>(),
+							new Hashtable<String, Object>(), getLabels());
 		} catch (Exception e) {
 			ezetapErrorCallBack(
 					EzetapErrors.ERROR_API_WALLETPAYMENT.getErrorCode(),
@@ -752,6 +759,7 @@ public class EzeAPIActivity extends Activity {
 					.equalsIgnoreCase(paymentMode)) {
 				amount = 0.0;
 			}
+
 			try {
 				if (EzetapUserConfig.getPrepareDevice()) {
 					EzetapPayApis.create(EzetapUserConfig.getEzeUserConfig())
@@ -803,12 +811,18 @@ public class EzeAPIActivity extends Activity {
 			return;
 		}
 		EzetapPayApis.create(EzetapUserConfig.getEzeUserConfig())
-				.startCashPayment(this, AppConstants.REQ_CODE_PAY_CASH,
-						EzetapUserConfig.getUserName(), amount,
-						getOrderNumber(jsonObject), 0.0,// Tip
+				.startCashPayment(
+						this,
+						AppConstants.REQ_CODE_PAY_CASH,
+						EzetapUserConfig.getUserName(),
+						amount,
+						getOrderNumber(jsonObject),
 						getMobileNumber(jsonObject),// optional customer mobile
-													// number
-						getCustomerName(jsonObject));// optional App Data
+						getCustomerName(jsonObject), getEmailID(jsonObject),
+						getExternalReference1(jsonObject),
+						getExternalReference2(jsonObject),
+						new Hashtable<String, Object>(),// optional App Data
+						new Hashtable<String, Object>());
 	}
 
 	/**
@@ -818,8 +832,31 @@ public class EzeAPIActivity extends Activity {
 	 *            pluginArgs - Arguments to the Ezetap API, as passed from JS
 	 */
 	private void initiateChequePayment(JSONArray pluginArgs) {
-		ezetapErrorCallBack(EzetapErrors.ERROR_API_CHEQUE.getErrorCode(),
-				EzetapErrors.ERROR_API_CHEQUE.getErrorMessage());
+		Double amount = null;
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = new JSONObject(pluginArgs.get(0).toString());
+			amount = getAmount(jsonObject);
+		} catch (Exception e) {
+			ezetapErrorCallBack(
+					EzetapErrors.ERROR_MISSING_MANDATORYPARAMS.getErrorCode(),
+					EzetapErrors.ERROR_MISSING_MANDATORYPARAMS
+							.getErrorMessage());
+			return;
+		}
+		EzetapPayApis.create(EzetapUserConfig.getEzeUserConfig())
+				.startChequePayment(this, AppConstants.REQ_CODE_PAY_CHEQUE,
+						getUserName(jsonObject), amount,
+						getOrderNumber(jsonObject),
+						getMobileNumber(jsonObject), getEmailID(jsonObject),
+						getCustomerName(jsonObject),
+						getChequeNumber(jsonObject), getBankCode(jsonObject),
+						getBankName(jsonObject), getBankAccNumber(jsonObject),
+						getChequeDate(jsonObject),
+						getExternalReference1(jsonObject),
+						getExternalReference2(jsonObject),
+						new Hashtable<String, Object>(),
+						new Hashtable<String, Object>());
 	}
 
 	/**
@@ -1284,6 +1321,165 @@ public class EzeAPIActivity extends Activity {
 	}
 
 	/**
+	 * Method to return the cheque number from the takePayment API arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getChequeNumber(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_CHEQUE)) {
+				JSONObject jsonCheque = new JSONObject(jsonParams.get(
+						EzeAPIConstants.KEY_CHEQUE).toString());
+				if (jsonCheque.has(EzeAPIConstants.KEY_CHEQUE_NUMBER)) {
+					String chqNumber = jsonCheque.get(
+							EzeAPIConstants.KEY_CHEQUE_NUMBER).toString();
+					if ("".equalsIgnoreCase(chqNumber))
+						return null;
+					else
+						return chqNumber;
+				} else
+					return null;
+			} else
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Method to return the Bank Code from the takePayment API arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getBankCode(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_CHEQUE)) {
+				JSONObject jsonCheque = new JSONObject(jsonParams.get(
+						EzeAPIConstants.KEY_CHEQUE).toString());
+				if (jsonCheque.has(EzeAPIConstants.KEY_BANK_CODE)) {
+					String bankCode = jsonCheque.get(
+							EzeAPIConstants.KEY_BANK_CODE).toString();
+					if ("".equalsIgnoreCase(bankCode))
+						return null;
+					else
+						return bankCode;
+				} else
+					return null;
+			} else
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Method to return the Bank Name from the takePayment API arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getBankName(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_CHEQUE)) {
+				JSONObject jsonCheque = new JSONObject(jsonParams.get(
+						EzeAPIConstants.KEY_CHEQUE).toString());
+				if (jsonCheque.has(EzeAPIConstants.KEY_BANK_NAME)) {
+					String bankName = jsonCheque.get(
+							EzeAPIConstants.KEY_BANK_NAME).toString();
+					if ("".equalsIgnoreCase(bankName))
+						return null;
+					else
+						return bankName;
+				} else
+					return null;
+			} else
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Method to return the Bank Account Number from the takePayment API
+	 * arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getBankAccNumber(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_CHEQUE)) {
+				JSONObject jsonCheque = new JSONObject(jsonParams.get(
+						EzeAPIConstants.KEY_CHEQUE).toString());
+				if (jsonCheque.has(EzeAPIConstants.KEY_BANK_ACCOUNT_NUMBER)) {
+					String bankAccNum = jsonCheque.get(
+							EzeAPIConstants.KEY_BANK_ACCOUNT_NUMBER).toString();
+					if ("".equalsIgnoreCase(bankAccNum))
+						return null;
+					else
+						return bankAccNum;
+				} else
+					return null;
+			} else
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Method to return the Cheque Date from the takePayment API arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getChequeDate(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_CHEQUE)) {
+				JSONObject jsonCheque = new JSONObject(jsonParams.get(
+						EzeAPIConstants.KEY_CHEQUE).toString());
+				if (jsonCheque.has(EzeAPIConstants.KEY_CHEQUE_DATE)) {
+					String chqDate = jsonCheque.get(
+							EzeAPIConstants.KEY_CHEQUE_DATE).toString();
+					if ("".equalsIgnoreCase(chqDate))
+						return null;
+					else
+						return chqDate;
+				} else
+					return null;
+			} else
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Method to return the User Name from the takePayment API arguments
+	 * 
+	 * @param JSONObject
+	 *            jsonParams - The request object as passed from JS
+	 */
+	private String getUserName(JSONObject jsonParams) {
+		try {
+			if (jsonParams.has(EzeAPIConstants.KEY_USER_NAME)) {
+				String userName = jsonParams.get(EzeAPIConstants.KEY_USER_NAME)
+						.toString();
+				if ("".equalsIgnoreCase(userName))
+					return null;
+				else
+					return userName;
+			} else
+				return null;
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Method to return the customer name from the takePayment API arguments
 	 * 
 	 * @param JSONObject
@@ -1640,6 +1836,9 @@ public class EzeAPIActivity extends Activity {
 		case AppConstants.REQ_CODE_PAY_WALLET:
 			takeWalletPaymentCallBack(intent, resultCode);
 			break;
+		case AppConstants.REQ_CODE_PAY_CHEQUE:
+			takeChequePaymentCallBack(intent, resultCode);
+			break;
 		case AppConstants.REQ_CODE_PAY_CARD:
 			takeCardPaymentCallBack(intent, resultCode);
 			break;
@@ -1767,7 +1966,78 @@ public class EzeAPIActivity extends Activity {
 						.put(EzeAPIConstants.KEY_REFERENCES,
 								returnReferencesObject(data
 										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
-				Log.d("msg", jsonResult.toString()+"");
+				ezetapSuccessCallBack(jsonResult.toString());
+			} catch (Exception e) {
+				ezetapErrorCallBack(
+						EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),
+						EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT
+								.getErrorMessage());
+			}
+			break;
+
+		case EzeConstants.RESULT_FAILED:
+		default:
+			try {
+				if (data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA) != null) {
+					JSONObject errJson = new JSONObject(
+							data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
+					ezetapErrorCallBack(
+							errJson.getString(EzeConstants.KEY_ERROR_CODE),
+							errJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+				} else {
+					ezetapErrorCallBack(
+							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
+									.getErrorCode(),
+							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
+									.getErrorMessage());
+				}
+			} catch (Exception e) {
+				ezetapErrorCallBack(
+						EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT.getErrorCode(),
+						EzetapErrors.ERROR_DEFAULT_TAKEPAYMENT
+								.getErrorMessage());
+			}
+			break;
+		}
+	}
+
+	/**
+	 * Method to return the response back from the service app for
+	 * takeChequePayment API
+	 * 
+	 * @param int resultCode - The result code returned by the service app.
+	 * @param Intent
+	 *            intent - The result data returned by the service app
+	 */
+	private void takeChequePaymentCallBack(Intent data, int resultCode) {
+		switch (resultCode) {
+		case EzeConstants.RESULT_SUCCESS:
+			try {
+				JSONObject jsonResult = new JSONObject();
+				jsonResult
+						.put(EzeAPIConstants.KEY_TRANSACTION,
+								returnTransactionObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
+						.put(EzeAPIConstants.KEY_CHEQUE,
+								returnChequeObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
+						.put(EzeAPIConstants.KEY_MERCHANT,
+								returnMerchantObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
+						.put(EzeAPIConstants.KEY_CUSTOMER,
+								returnCustomerObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
+						.put(EzeAPIConstants.KEY_TRANSACTION_RECEIPT,
+								returnReceiptObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
+						.put(EzeAPIConstants.KEY_REFERENCES,
+								returnReferencesObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
 				ezetapSuccessCallBack(jsonResult.toString());
 			} catch (Exception e) {
 				ezetapErrorCallBack(
@@ -2308,11 +2578,13 @@ public class EzeAPIActivity extends Activity {
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_MID));
 		txnObject.put(EzeAPIConstants.KEY_TID,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_TID));
+		txnObject.put(EzeAPIConstants.KEY_EMI_ID,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_EMI_ID));
 		return txnObject;
 	}
 
 	/**
-	 * Method to return the Transaction object back from the service app
+	 * Method to return the wallet transaction object back from the service app
 	 * response
 	 * 
 	 * @param String
@@ -2320,23 +2592,48 @@ public class EzeAPIActivity extends Activity {
 	 */
 	private JSONObject returnWalletObject(String transaction) throws Exception {
 		JSONObject jsonTxn = new JSONObject(transaction);
-		JSONObject txnObject = new JSONObject();
+		JSONObject txnWalletObject = new JSONObject();
 
-		txnObject.put(EzeAPIConstants.KEY_WALLET_PROVIDER,
+		txnWalletObject.put(EzeAPIConstants.KEY_WALLET_PROVIDER,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_WALLET_PROVIDER));
-		txnObject
+		txnWalletObject
 				.put(EzeAPIConstants.KEY_WALLET_CUSTOMER_ID,
 						getValueForKey(jsonTxn,
 								EzeAPIConstants.KEY_WALLET_CUSTOMER_ID));
-		txnObject.put(EzeAPIConstants.KEY_WALLET_CHANNEL_ID,
+		txnWalletObject.put(EzeAPIConstants.KEY_WALLET_CHANNEL_ID,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_WALLET_CHANNEL_ID));
-		txnObject.put(EzeAPIConstants.KEY_WALLET_MID,
+		txnWalletObject.put(EzeAPIConstants.KEY_WALLET_MID,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_WALLET_MID));
-		txnObject.put(EzeAPIConstants.KEY_WALLET_ACQUIRER,
+		txnWalletObject.put(EzeAPIConstants.KEY_WALLET_ACQUIRER,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_WALLET_ACQUIRER));
-		txnObject.put(EzeAPIConstants.KEY_WALLET_REF_TXN_ID,
+		txnWalletObject.put(EzeAPIConstants.KEY_WALLET_REF_TXN_ID,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_WALLET_REF_TXN_ID));
-		return txnObject;
+		return txnWalletObject;
+	}
+
+	/**
+	 * Method to return the cheque transaction object back from the service app
+	 * response
+	 * 
+	 * @param String
+	 *            transaction - The response object received from service app.
+	 */
+	private JSONObject returnChequeObject(String transaction) throws Exception {
+		JSONObject jsonTxn = new JSONObject(transaction);
+		JSONObject txnChequeObject = new JSONObject();
+		txnChequeObject.put(EzeAPIConstants.KEY_BANK_CODE,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_BANK_CODE));
+		txnChequeObject.put(EzeAPIConstants.KEY_CHEQUE_NUMBER,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_CHEQUE_NUMBER));
+		txnChequeObject.put(EzeAPIConstants.KEY_CHEQUE_DATE,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_CHEQUE_DATE));
+		txnChequeObject.put(EzeAPIConstants.KEY_BANK_NAME,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_BANK_NAME));
+		txnChequeObject
+				.put(EzeAPIConstants.KEY_BANK_ACCOUNT_NUMBER,
+						getValueForKey(jsonTxn,
+								EzeAPIConstants.KEY_BANK_ACCOUNT_NUMBER));
+		return txnChequeObject;
 	}
 
 	/**

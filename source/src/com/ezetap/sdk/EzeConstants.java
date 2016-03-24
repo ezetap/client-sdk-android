@@ -65,6 +65,12 @@ public class EzeConstants {
 	public static final String KEY_APPLICATION_ID = "applicationId";
 	public static final String KEY_VERSION_CODE = "versionCode";
 	
+	public static final String KEY_BANK_NAME = "bankName";
+	public static final String KEY_BANK_CODE = "bankCode";
+	public static final String KEY_BANK_ACCOUNT = "bankAccountNo";
+	public static final String KEY_CHEQUE_DATE = "chequeDate";
+	public static final String KEY_CHEQUE_NUMBER = "chequeNumber";
+	
 	public static final String KEY_COMM_DEVICE_ID = "communicationDeviceId";
 	public static final String KEY_PREFERRED_COMM = "preferredCommunication";
 	
@@ -148,6 +154,9 @@ public class EzeConstants {
 	public static final String ACTION_PAY_CASH = "paycash";
 	
 	public static final String ACTION_PAY_WALLET = "paywallet";
+	
+	public static final String ACTION_PAY_CHEQUE = "paycheque";
+	
 
 	/**
 	 * Action code to register Ezetap Device.
