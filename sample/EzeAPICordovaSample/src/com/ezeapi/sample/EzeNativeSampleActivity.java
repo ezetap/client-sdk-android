@@ -244,21 +244,14 @@ public class EzeNativeSampleActivity extends Activity implements
 				jsonCheque.put("chequeDate", txtChqDate.getText().toString()
 						.trim());
 
-				// Building Optional params Object
-				jsonOptionalParams.put("amountCashback", 0.00);// Cannot have
-																// amount
-																// cashback in
-																// SALE
-																// transaction.
-				jsonOptionalParams.put("amountTip", 0.00);
+			
 				jsonOptionalParams.put("references", jsonReferences);
 				jsonOptionalParams.put("customer", jsonCustomer);
 
 				// Building final request object
 				jsonRequest
 						.put("amount", txtAmount.getText().toString().trim());
-				jsonRequest.put("mode", "SALE");// This attributes determines
-												// the type of transaction
+			
 				jsonRequest.put("options", jsonOptionalParams);
 				jsonRequest.put("cheque", jsonCheque);
 				jsonRequest.put("userName", "Demo user");
