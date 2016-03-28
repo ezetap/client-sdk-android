@@ -23,8 +23,14 @@ This version of the SDK fixes the "external reference" issue. In the earlier ver
 	2. Added 3PL support.
 	3. Initialize API has an optional 'prepareDevice' param which will by-pass prepare device at Initailze.
 	4. Minor bug fixes
+	
+## Version 1.0.5
+
+#####This version of the SDK adds the below features-
+	1. Added Cheque Payments and EMI payments.
+	2. Supporting three refrences for Cheque Payments, Wallet Payments, and Cash Payments.
 
 ### How to upgrade:
 IMPORTANT- If your project's targetSdkVersion is higher or equal to 23(Android 6.0 Marshmallow) please add Android support library v4 to your Android project from <a href="http://developer.android.com/tools/support-library/setup.html">here.</a> The Android support libraries are not required if your project's targetSdkVersion is lesser than 23.
 
-Replace the "EzetapAndroidSDK-Cordova1.0.4.JAR" file with the Version 1.0.4 JAR file.
+Replace the "EzetapAndroidSDK-Cordova1.0.5.JAR" file with the Version 1.0.5 JAR file.
