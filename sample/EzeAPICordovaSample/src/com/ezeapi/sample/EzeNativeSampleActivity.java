@@ -254,8 +254,6 @@ public class EzeNativeSampleActivity extends Activity implements
 			
 				jsonRequest.put("options", jsonOptionalParams);
 				jsonRequest.put("cheque", jsonCheque);
-				jsonRequest.put("userName", "Demo user");
-				Log.d("request", jsonRequest.toString());
 
 				EzeAPI.chequeTransaction(this, REQUESTCODE_CHEQUE, jsonRequest);
 			} catch (JSONException e) {
