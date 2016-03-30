@@ -846,7 +846,7 @@ public class EzeAPIActivity extends Activity {
 		}
 		EzetapPayApis.create(EzetapUserConfig.getEzeUserConfig())
 				.startChequePayment(this, AppConstants.REQ_CODE_PAY_CHEQUE,
-						getUserName(jsonObject), amount,
+						EzetapUserConfig.getUserName(), amount,
 						getOrderNumber(jsonObject),
 						getMobileNumber(jsonObject), getEmailID(jsonObject),
 						getCustomerName(jsonObject),
