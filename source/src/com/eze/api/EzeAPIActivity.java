@@ -13,6 +13,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.eze.api.EzeAPIConstants.EzetapErrors;
+import com.ezetap.sdk.AppConstants;
+import com.ezetap.sdk.EzeConstants;
+import com.ezetap.sdk.EzeConstants.AppMode;
+import com.ezetap.sdk.EzeConstants.CommunicationChannel;
+import com.ezetap.sdk.EzeConstants.LoginAuthMode;
+import com.ezetap.sdk.EzetapApiConfig;
+import com.ezetap.sdk.EzetapPayApis;
+import com.ezetap.sdk.EzetapUtils;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -25,19 +35,12 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
-import android.util.Log;
-
-import com.eze.api.EzeAPIConstants.EzetapErrors;
-import com.ezetap.sdk.AppConstants;
-import com.ezetap.sdk.EzeConstants;
-import com.ezetap.sdk.EzeConstants.AppMode;
-import com.ezetap.sdk.EzeConstants.CommunicationChannel;
-import com.ezetap.sdk.EzeConstants.LoginAuthMode;
-import com.ezetap.sdk.EzetapApiConfig;
-import com.ezetap.sdk.EzetapPayApis;
+import android.widget.Toast;
 
 public class EzeAPIActivity extends Activity {
 
@@ -62,6 +65,7 @@ public class EzeAPIActivity extends Activity {
 	 */
 
 	private String APIParams = null;
+	
 
 	/**
 	 * {@inheritDoc Inherited method which is invoked when Activity is created}
@@ -69,6 +73,7 @@ public class EzeAPIActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		EzetapUtils.setHandler(aHandler);
 		if (getIntent().getAction() != null) {
 			if (getIntent().hasExtra("params"))
 				invokeEzeAPIs(getIntent().getAction(), getIntent()
@@ -83,6 +88,31 @@ public class EzeAPIActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Handler to receive the SDK notifications
+	*/	
+	Handler aHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case EzeConstants.RESULT_INSTALL_CANCELLED:
+					ezetapErrorCallBack(EzetapErrors.ERROR_INSTALL_CANCELLED.getErrorCode(), EzetapErrors.ERROR_INSTALL_CANCELLED.getErrorMessage());
+					break;
+				case EzeConstants.RESULT_DOWNLOAD_FAILURE: {
+					ezetapErrorCallBack(EzetapErrors.ERROR_DOWNLOAD_FAILURE.getErrorCode(), EzetapErrors.ERROR_DOWNLOAD_FAILURE.getErrorMessage());
+					break;
+				}
+				case EzeConstants.RESULT_DOWNLOAD_SUCCESS: {
+					Toast.makeText(EzeAPIActivity.this, msg.toString(), Toast.LENGTH_LONG).show();
+					break;
+				}
+				case EzeConstants.RESULT_DOWNLOAD_ABORTED: {
+					ezetapErrorCallBack(EzetapErrors.ERROR_DOWNLOAD_ABORTED.getErrorCode(), EzetapErrors.ERROR_DOWNLOAD_FAILURE.getErrorMessage());
+					break;
+				}
+			}
+		}
+	};
+	
 	/**
 	 * Method to delegate the request to Ezetap service app
 	 * 
@@ -1981,9 +2011,41 @@ public class EzeAPIActivity extends Activity {
 				if (data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA) != null) {
 					JSONObject errJson = new JSONObject(
 							data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
-					ezetapErrorCallBack(
+					if(errJson.has(EzeAPIConstants.KEY_TRANSACTION_ID)){
+						JSONObject jsonResult = new JSONObject();
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION,
+										returnTransactionObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_WALLET,
+										returnWalletObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_MERCHANT,
+										returnMerchantObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CUSTOMER,
+										returnCustomerObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION_RECEIPT,
+										returnReceiptObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_REFERENCES,
+										returnReferencesObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						ezetapErrorCallBack(
+								errJson.getString(EzeConstants.KEY_ERROR_CODE),
+								errJson.getString(EzeConstants.KEY_ERROR_MESSAGE),
+								jsonResult);
+					}else{
+						ezetapErrorCallBack(
 							errJson.getString(EzeConstants.KEY_ERROR_CODE),
 							errJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+					}
 				} else {
 					ezetapErrorCallBack(
 							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
@@ -2053,9 +2115,41 @@ public class EzeAPIActivity extends Activity {
 				if (data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA) != null) {
 					JSONObject errJson = new JSONObject(
 							data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
-					ezetapErrorCallBack(
-							errJson.getString(EzeConstants.KEY_ERROR_CODE),
-							errJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+					if(errJson.has(EzeAPIConstants.KEY_TRANSACTION_ID)){
+						JSONObject jsonResult = new JSONObject();
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION,
+										returnTransactionObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CHEQUE,
+										returnChequeObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_MERCHANT,
+										returnMerchantObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CUSTOMER,
+										returnCustomerObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION_RECEIPT,
+										returnReceiptObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_REFERENCES,
+										returnReferencesObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						ezetapErrorCallBack(
+								errJson.getString(EzeConstants.KEY_ERROR_CODE),
+								errJson.getString(EzeConstants.KEY_ERROR_MESSAGE),
+								jsonResult);
+					}else{
+						ezetapErrorCallBack(
+								errJson.getString(EzeConstants.KEY_ERROR_CODE),
+								errJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+					}
 				} else {
 					ezetapErrorCallBack(
 							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
@@ -2125,9 +2219,41 @@ public class EzeAPIActivity extends Activity {
 				if (data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA) != null) {
 					JSONObject aJson = new JSONObject(
 							data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
-					ezetapErrorCallBack(
-							aJson.getString(EzeConstants.KEY_ERROR_CODE),
-							aJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+					if(aJson.has(EzeAPIConstants.KEY_TRANSACTION_ID)){
+						JSONObject jsonResult = new JSONObject();
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION,
+										returnTransactionObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CARD_DETAILS,
+										returnCardObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_MERCHANT,
+										returnMerchantObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CUSTOMER,
+										returnCustomerObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION_RECEIPT,
+										returnReceiptObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_REFERENCES,
+										returnReferencesObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						ezetapErrorCallBack(
+								aJson.getString(EzeConstants.KEY_ERROR_CODE),
+								aJson.getString(EzeConstants.KEY_ERROR_MESSAGE),
+								jsonResult);
+					}else{
+						ezetapErrorCallBack(
+								aJson.getString(EzeConstants.KEY_ERROR_CODE),
+								aJson.getString(EzeConstants.KEY_ERROR_MESSAGE));
+					}
 				} else {
 					ezetapErrorCallBack(
 							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
@@ -2163,6 +2289,10 @@ public class EzeAPIActivity extends Activity {
 								returnTransactionObject(data
 										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
 				jsonResult
+						.put(EzeAPIConstants.KEY_MERCHANT,
+								returnMerchantObject(data
+										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+				jsonResult
 						.put(EzeAPIConstants.KEY_CUSTOMER,
 								returnCustomerObject(data
 										.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
@@ -2189,10 +2319,38 @@ public class EzeAPIActivity extends Activity {
 				if (data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA) != null) {
 					JSONObject aJson = new JSONObject(
 							data.getStringExtra(EzeConstants.KEY_RESPONSE_DATA));
-					ezetapErrorCallBack(aJson.get(EzeConstants.KEY_ERROR_CODE)
+					if(aJson.has(EzeAPIConstants.KEY_TRANSACTION_ID)){
+						JSONObject jsonResult = new JSONObject();
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION,
+										returnTransactionObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_MERCHANT,
+										returnMerchantObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_CUSTOMER,
+										returnCustomerObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_TRANSACTION_RECEIPT,
+										returnReceiptObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						jsonResult
+								.put(EzeAPIConstants.KEY_REFERENCES,
+										returnReferencesObject(data
+												.getStringExtra(EzeConstants.KEY_RESPONSE_DATA)));
+						ezetapErrorCallBack(
+								aJson.getString(EzeConstants.KEY_ERROR_CODE),
+								aJson.getString(EzeConstants.KEY_ERROR_MESSAGE),
+								jsonResult);
+					}else{
+						ezetapErrorCallBack(aJson.get(EzeConstants.KEY_ERROR_CODE)
 							.toString(),
 							aJson.get(EzeConstants.KEY_ERROR_MESSAGE)
 									.toString());
+					}
 				} else {
 					ezetapErrorCallBack(
 							EzetapErrors.ERROR_CANCEL_TAKEPAYMENT
@@ -2580,6 +2738,8 @@ public class EzeAPIActivity extends Activity {
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_TID));
 		txnObject.put(EzeAPIConstants.KEY_EMI_ID,
 				getValueForKey(jsonTxn, EzeAPIConstants.KEY_EMI_ID));
+		txnObject.put(EzeAPIConstants.KEY_SIGNATURE_REQD,
+				getValueForKey(jsonTxn, EzeAPIConstants.KEY_SIGNATURE_REQD));
 		return txnObject;
 	}
 
@@ -2761,6 +2921,41 @@ public class EzeAPIActivity extends Activity {
 		finish();
 	}
 
+	/**
+	 * Method to return the error result to the calling Activity
+	 * 
+	 * @param String
+	 *            errorCode - The error code encountered
+	 * @param String
+	 *            errorMessage - The error message encountered
+	 * @param String
+	 *            result - The result object
+	 */
+	private void ezetapErrorCallBack(String errorCode, String errorMessage,JSONObject result) {
+		Intent intent = new Intent();
+		JSONObject jsonErrorObj = new JSONObject();
+		JSONObject jsonResponse = new JSONObject();
+		try {
+			jsonErrorObj.put("code", errorCode);
+			jsonErrorObj.put("message", errorMessage);
+			jsonResponse.put("error", jsonErrorObj);
+			jsonResponse.put("status", "fail");
+			jsonResponse.put("result", result);
+			intent.putExtra("response", jsonResponse.toString());
+		} catch (Exception ex) {
+			intent.putExtra(
+					"response",
+					"{\"status\":\"fail\",\"result\":null,\"error\":{\"code\":\""
+							+ EzetapErrors.ERROR_MISSING_MANDATORYPARAMS
+									.getErrorCode()
+							+ "\",\"message\":\""
+							+ EzetapErrors.ERROR_MISSING_MANDATORYPARAMS
+									.getErrorMessage() + "\"}}");
+		}
+		setResult(Activity.RESULT_CANCELED, intent);
+		finish();
+	}
+	
 	private void validateDeviceFirmware(JSONArray args) {
 		int targetSdkVersion = 0;
 		try {

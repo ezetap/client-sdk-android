@@ -86,6 +86,7 @@ public class EzeAPIConstants {
 	public static final String KEY_IMAGE_DATA = "imageData";
 	public static final String KEY_EMI_ID = "emiId";
 	public static final String KEY_IMAGE_TYPE = "imageType";
+	public static final String KEY_SIGNATURE_REQD = "signReqd";
 
 	// Card object key names
 	public static final String KEY_AUTH_CODE = "authCode";
@@ -222,12 +223,15 @@ public class EzeAPIConstants {
 				"EZECLI_323036",
 				"Error occured while connecting to Ezetap Server. Please try again after sometime."), ERROR_CANCEL_TAKEPAYMENT(
 				"EZECLI_323037", "Transaction cancelled."), ERROR_MISSING_AMOUNT(
-				"EZECLI_323028", "please fill the amount"), ERROR_API_CNPPAYMENT(
-				"EZECLI_323038",
+				"EZECLI_323038", "Please enter the amount"), ERROR_API_CNPPAYMENT(
+				"EZECLI_323039",
 				"CNP payment is not supported in this version of SDK."), ERROR_DEFAULT_CNPPAYMENT(
-				"EZECLI_323039", "Error occurred in CNP PAYMENT API."), ERROR_PERMISSION_EXCEPTION(
-				"EZECLI_323038",
-				"Something went wrong while calling Marshmallow permission API. Please make sure you add Google support library to your project.");
+				"EZECLI_323040", "Error occurred in CNP PAYMENT API."), ERROR_PERMISSION_EXCEPTION(
+				"EZECLI_323041",
+				"Something went wrong while calling Marshmallow permission API. Please make sure you add Google support library to your project."),
+				ERROR_INSTALL_CANCELLED("EZECLI_323042","Service app installation was cancelled."),
+				ERROR_DOWNLOAD_FAILURE("EZECLI_323043","Service app installation failed."),
+				ERROR_DOWNLOAD_ABORTED("EZECLI_323044","Service app installation was aborted");
 		private final String ERRORCODE, ERRORMESSAGE;
 
 		EzetapErrors(String mERRORCODE, String mERRORMESSAGE) {

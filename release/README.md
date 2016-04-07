@@ -29,6 +29,13 @@ This version of the SDK fixes the "external reference" issue. In the earlier ver
 #####This version of the SDK adds the below features-
 	1. Added Cheque Payments and EMI payments.
 	2. Supporting three refrences for Cheque Payments, Wallet Payments, and Cash Payments.
+	
+## Version 1.0.6
+
+#####This version of the SDK adds the below features-
+	1. Fixing App freeze issue on click of 'No' option in the Alert.
+	2. Adding 'signReqd' parameter inside 'txn' object.
+	3. Adding transaction details to the result object when error EZETAP_0000033 is encountered.
 
 ### How to upgrade:
 IMPORTANT- If your project's targetSdkVersion is higher or equal to 23(Android 6.0 Marshmallow) please add Android support library v4 to your Android project from <a href="http://developer.android.com/tools/support-library/setup.html">here.</a> The Android support libraries are not required if your project's targetSdkVersion is lesser than 23.

@@ -89,7 +89,7 @@ public abstract class EzetapPayApis {
 		}
 
 		public void checkForIncompleteTransaction(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_NONCE_CHECK, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_NONCE_CHECK, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		public void checkForUpdate(Activity context, int reqCode, String username) {
@@ -99,7 +99,7 @@ public abstract class EzetapPayApis {
 			appData.put(EzeConstants.KEY_APP_NAME, AppConstants.APP_NAME);
 			appData.put(EzeConstants.KEY_APP_VERSION, AppConstants.SDK_VERSION);
 			appData.put(EzeConstants.KEY_DISPLAY_VERSION, AppConstants.SDK_VERSION);
-			callApi(context, EzeConstants.ACTION_CHECK_UPDATES, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_CHECK_UPDATES, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 		}
 
 		@Override
@@ -121,7 +121,7 @@ public abstract class EzetapPayApis {
 			double amountCashBack, String orderNumber, double tip, String mobile, String emailId, 
 			String externalReference2, String externalReference3, 
 			Hashtable<String, Object> appData, Hashtable<String, Object> additionalData) {
-			callApi(context, EzeConstants.ACTION_PAYCARD, reqCode, username, amount, amountCashBack, tip, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, additionalData);
+			callApi(context, EzeConstants.ACTION_PAYCARD, reqCode, username, amount, amountCashBack, tip, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, additionalData, null);
 		}
 		
 		@Override
@@ -140,42 +140,42 @@ public abstract class EzetapPayApis {
 		public void startPreAuth(Activity context, int reqCode, String username, double amount, 
 			String orderNumber, String mobile, String emailId, String externalReference2, 
 			String externalReference3, Hashtable<String, Object> appData){
-			callApi(context, EzeConstants.ACTION_AUTHORISE_CARD, reqCode, username, amount, 0, 0, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, null);
+			callApi(context, EzeConstants.ACTION_AUTHORISE_CARD, reqCode, username, amount, 0, 0, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, null, null);
 		}
 
 		@Override
 		public void confirmPreAuth(Activity context, int reqCode, String username, double amount, 
 			String orderNumber, String mobile, String emailId, String externalReference2, 
 			String externalReference3, Hashtable<String, Object> appData){
-			callApi(context, EzeConstants.ACTION_CONFIRM_PRE_AUTH, reqCode, username, amount, 0, 0, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, null);
+			callApi(context, EzeConstants.ACTION_CONFIRM_PRE_AUTH, reqCode, username, amount, 0, 0, orderNumber, mobile, emailId, null, externalReference2, externalReference3, null, appData, null, null);
 		}
 		
 		@Override
 		public void releasePreAuth(Activity context, int reqCode, String username, double amount, String orderNumber, Hashtable<String, Object> appData){
-			callApi(context, EzeConstants.ACTION_RELEASE_PRE_AUTH, reqCode, username, amount, 0, 0, orderNumber, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_RELEASE_PRE_AUTH, reqCode, username, amount, 0, 0, orderNumber, null, null, null, null, null, null, appData, null, null);
 		}
 
 		@Override
 		public void startCashPayment(Activity context, int reqCode, String username, double amount, String orderNumber, double tip, String mobile, String customerName) {
-			callApi(context, EzeConstants.ACTION_PAY_CASH, reqCode, username, amount, 0, tip, orderNumber, mobile, null, customerName, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_PAY_CASH, reqCode, username, amount, 0, tip, orderNumber, mobile, null, customerName, null, null, null, null, null, null);
 		}
 
 		@Override
 		public void startVoidTransaction(Activity context, int reqCode, String username, String txnId) {
 			Hashtable<String, Object> appData = new Hashtable<String, Object>();
 			appData.put(EzeConstants.KEY_TRANSACTION_ID, txnId);
-			callApi(context, EzeConstants.ACTION_VOID, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_VOID, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 		}
 
 		public void logout(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_LOGOUT, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_LOGOUT, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		@Override
 		public void attachSignature(Activity context, int reqCode, String username, String txnId) {
 			Hashtable<String, Object> appData = new Hashtable<String, Object>();
 			appData.put(EzeConstants.KEY_TRANSACTION_ID, txnId);
-			callApi(context, EzeConstants.ACTION_ATTACH_SIGNATURE, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_ATTACH_SIGNATURE, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 		}
 
 		public void attachSignature(Activity context, int reqCode, String username, String txnId, Bitmap bitmap, CompressFormat format) {
@@ -191,7 +191,7 @@ public abstract class EzetapPayApis {
 				int width = bitmap.getWidth();
 				int height = bitmap.getHeight();
 				ByteArrayOutputStream s = new ByteArrayOutputStream();
-				bitmap.compress(format, 80, s);
+				bitmap.compress(format, 100, s);
 				s.flush();
 				s.close();
 	
@@ -205,7 +205,7 @@ public abstract class EzetapPayApis {
 				appData.put(EzeConstants.KEY_SIGNATURE_HEIGHT, height);
 				appData.put(EzeConstants.KEY_SIGNATURE_FORMAT, signatureFormat);
 				appData.put(EzeConstants.KEY_SIGNATURE_DATA, s.toByteArray());
-				callApi(context, EzeConstants.ACTION_ATTACH_SIGNATURE_EX, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+				callApi(context, EzeConstants.ACTION_ATTACH_SIGNATURE_EX, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 			} catch (Exception e) {}
 		}
 
@@ -241,21 +241,21 @@ public abstract class EzetapPayApis {
 			Hashtable<String, Object> appData = new Hashtable<String, Object>();
 			appData.put(EzeConstants.KEY_PASSWORD, oldPassword);
 			appData.put(EzeConstants.KEY_NEW_PASSWORD, newPassword);
-			callApi(context, EzeConstants.ACTION_CHANGE_PWD, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_CHANGE_PWD, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 		}
 
 		@Override
 		public void registerDongle(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_REGISTER_DONGLE, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_REGISTER_DONGLE, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		@Override
 		public void getTransactionHistory(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_TXN_HISTORY, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_TXN_HISTORY, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		public void getCardInfo(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_GET_CARD_INFO, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_GET_CARD_INFO, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		private String findTargetAppPackage(Intent intent, Activity context) {
@@ -307,12 +307,10 @@ public abstract class EzetapPayApis {
 						reqData.put(EzeConstants.KEY_APPKEY, appKey);
 						reqData.put(EzeConstants.KEY_MERCHANT_NAME, merchantName);
 						reqData.put(EzeConstants.KEY_CURRENCY_CODE, currencyCode);
-					} else {
-						intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
-						intent.putExtra(EzeConstants.KEY_MERCHANT_NAME, merchantName);
-						intent.putExtra(EzeConstants.KEY_CURRENCY_CODE, currencyCode);
-					}
-
+					} 
+					intent.putExtra(EzeConstants.KEY_APPKEY, appKey);
+					intent.putExtra(EzeConstants.KEY_MERCHANT_NAME, merchantName);
+					intent.putExtra(EzeConstants.KEY_CURRENCY_CODE, currencyCode);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
@@ -323,25 +321,25 @@ public abstract class EzetapPayApis {
 
 		@Override
 		public void initializeDevice(Activity context, int reqCode, String username, Hashtable<String, Object> appData) {
-			callApi(context, EzeConstants.ACTION_INIT_DEVICE_SESSION, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_INIT_DEVICE_SESSION, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, appData, null, null);
 		}
 		
 		@Override
 		public void initializeDevice(Activity context, int reqCode, String username) {
-			callApi(context, EzeConstants.ACTION_INIT_DEVICE_SESSION, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null);
+			callApi(context, EzeConstants.ACTION_INIT_DEVICE_SESSION, reqCode, username, 0, 0, 0, null, null, null, null, null, null, null, null, null, null);
 		}
 
 		@Override
 		public void startCardPayment(Activity context, int reqCode, String username, double amount, 
 			double amountCashback, String orderNumber, double tip, String mobile, String emailID, 
 			Hashtable<String, Object> appData, Hashtable<String, Object> addData) {
-			callApi(context, EzeConstants.ACTION_PAYCARD, reqCode, username, amount, amountCashback, tip, orderNumber, mobile, emailID, null, null, null, null, appData, null);
+			callApi(context, EzeConstants.ACTION_PAYCARD, reqCode, username, amount, amountCashback, tip, orderNumber, mobile, emailID, null, null, null, null, appData, null, null);
 		}
 
 		@Override
 		public void startWalletPayment(Activity context, int reqCode, String username, double amount, 
 			String orderNumber, String customerMobile, String customerName, String emailAddress, String[] labels) {
-			callApi(context, EzeConstants.ACTION_PAY_WALLET, reqCode, username, amount, 0, 0, orderNumber, null, null, customerName, null, null, labels, null, null);
+			callApi(context, EzeConstants.ACTION_PAY_WALLET, reqCode, username, amount, 0, 0, orderNumber, null, null, customerName, null, null, labels, null, null, null);
 		}
 
 		@Override
@@ -352,7 +350,7 @@ public abstract class EzetapPayApis {
 			if(appData == null)
 				appData = new Hashtable<String, Object>();
 			appData.put(EzeConstants.KEY_CNPURL, cnpURL);
-			callApi(context, EzeConstants.ACTION_PAYCNP, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, null, null, null, null, appData, additionalData);
+			callApi(context, EzeConstants.ACTION_PAYCNP, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, null, null, null, null, appData, additionalData, null);
 		}
 
 		@Override
@@ -360,14 +358,14 @@ public abstract class EzetapPayApis {
 			String orderNumber, String mobile, String customerName, String emailID, 
 			String externalReference2, String externalReference3,
 			Hashtable<String, Object> appData, Hashtable<String, Object> addData) {
-			callApi(context, EzeConstants.ACTION_PAY_CASH, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, null, appData, addData);
+			callApi(context, EzeConstants.ACTION_PAY_CASH, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, null, appData, addData, null);
 		}
 
 		private void callApi(Activity context, String action, int reqCode, 
 			String username, double amount, double amountCashback, double tip, 
 			String orderNumber, String mobile, String emailID, String customerName,
 			String externalRef2, String externalRef3, String[] labels,
-			Hashtable<String, Object> appData, Hashtable<String, Object> additionalData) {
+			Hashtable<String, Object> appData, Hashtable<String, Object> additionalData, String[] externalRefs) {
 			try {
 				Intent intent = createIntent();
 				String targetAppPackage = findTargetAppPackage(intent, context);
@@ -410,6 +408,7 @@ public abstract class EzetapPayApis {
 				reqData.put(EzeConstants.KEY_EXTERNAL_REF_3, externalRef3);
 				
 				intent.putExtra("labels", labels);
+				intent.putExtra("externalRefs", externalRefs);
 				
 				if (appData != null) {
 					Enumeration<String> keys = appData.keys();
@@ -423,7 +422,10 @@ public abstract class EzetapPayApis {
 								jsonArr.put(arr[index]);
 							}
 							reqData.put(aKey, jsonArr);
-						} else if (aVal instanceof String) {
+						} else if (aVal instanceof byte[]) {
+							intent.putExtra(aKey, (byte[]) aVal);
+							reqData.put(aKey, aVal);
+						} else {
 							reqData.put(aKey, aVal);
 						}
 					}
@@ -443,7 +445,7 @@ public abstract class EzetapPayApis {
 								jsonArr.put(arr[index]);
 							}
 							addData.put(aKey, jsonArr);
-						} else if (aVal instanceof String) {
+						} else {
 							addData.put(aKey, aVal);
 						}
 					}
@@ -463,7 +465,7 @@ public abstract class EzetapPayApis {
 			String orderNumber, String mobile, String emailID, String customerName, 
 			String externalReference2, String externalReference3, 
 			Hashtable<String, Object> appData, Hashtable<String, Object> addData, String[] labels) {
-			callApi(context, EzeConstants.ACTION_PAY_WALLET, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, labels, appData, null);
+			callApi(context, EzeConstants.ACTION_PAY_WALLET, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, labels, appData, null, null);
 		}
 
 		@Override
@@ -480,7 +482,21 @@ public abstract class EzetapPayApis {
 			appData.put(EzeConstants.KEY_BANK_ACCOUNT, bankAccountNo);
 			appData.put(EzeConstants.KEY_BANK_NAME, bankName);
 			appData.put(EzeConstants.KEY_BANK_CODE, bankCode);
-			callApi(context, EzeConstants.ACTION_PAY_CHEQUE, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, null, appData, addData);
+			callApi(context, EzeConstants.ACTION_PAY_CHEQUE, reqCode, username, amount, 0, 0, orderNumber, mobile, emailID, customerName, externalReference2, externalReference3, null, appData, addData, null);
+		}
+
+		@Override
+		public void startCardPayment(Activity context, int reqCode, String username, double amount, 
+				double amountCashback, String orderNumber, double tip, String mobile, String emailID,
+				String externalReference2, String externalReference3,
+				Hashtable<String, Object> appData, Hashtable<String, Object> addData, String[] externalRefs) {
+			callApi(context, EzeConstants.ACTION_PAYCARD, reqCode, username, amount, amountCashback, tip, orderNumber, mobile, emailID, null, externalReference2, externalReference3, null, appData, addData, externalRefs);
+		}
+
+		@Override
+		public void getTransactionDetail(Activity context, int reqCode,
+				String username, String externalReference) {
+			callApi(context, EzeConstants.ACTION_TXN_HISTORY, reqCode, username, 0, 0, 0, externalReference, null, null, null, null, null, null, null, null, null);
 		}
 	}
 
@@ -523,6 +539,7 @@ public abstract class EzetapPayApis {
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);		
 		intent.addCategory(Intent.CATEGORY_DEFAULT);	
 		intent.putExtra("removeConfirmTransaction", true);
+		
 		return intent;
 	}
 }

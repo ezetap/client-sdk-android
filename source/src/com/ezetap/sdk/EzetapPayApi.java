@@ -141,6 +141,46 @@ public interface EzetapPayApi {
 	 *            - Ezetap username
 	 * @param amount
 	 *            - Transaction amount
+	 * @param amountCashback
+	 *            - Transaction Cashback Amount	 
+	 * @param orderNumber
+	 *            - External Reference associated with the transaction (optional)
+	 * @param tip
+	 *            - Tip for this transaction (can be zero)
+	 * @param mobile
+	 *            - Mobile number of customer (optional)
+	 * @param emailID
+	 *            - Email Address of customer (optional)
+	 * @param externalReference1
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)
+	 * @param externalReference2
+	 *            - Additional External Reference associated with the
+	 *            transaction (optional)	             
+	 * @param appData
+	 *            - Opaque App specific data (optional)
+	 * @param addData
+	 *            - Additional App specific data (optional)<br>
+	 *            If option to convert to EMI is to be supressed, add <tt>markEMINotEligible</tt> as <tt>true</tt> to this as boolean value. 
+	 * @param externalRefs
+	 *            - External references in additional data (optional)
+	 */
+	void startCardPayment(Activity context, int reqCode, String username, double amount, double amountCashback, 
+			String orderNumber, double tip, String mobile, String emailID, String externalReference2, String externalReference3,
+			Hashtable<String, Object> appData, Hashtable<String, Object> addData, String[] externalRefs);
+
+	/**
+	 * To initiate a card payment transaction, application should call this
+	 * method with following parameters:
+	 * 
+	 * @param context
+	 *            - Calling activity's context
+	 * @param reqCode
+	 *            - Request code for handling response
+	 * @param username
+	 *            - Ezetap username
+	 * @param amount
+	 *            - Transaction amount
 	 * @param orderNumber
 	 *            - External Reference associated with the transaction
 	 * @param tip
@@ -539,6 +579,22 @@ public interface EzetapPayApi {
 	 *            - Ezetap username
 	 */
 	void getTransactionHistory(Activity context, int reqCode, String username);
+	
+	
+	/**
+	 * To retrieve the transaction detail of a particular user for a particular set of references
+	 * Will retrieve the entire transaction history if txnMeta is skipped
+	 * @param context
+	 *            - Calling activity
+	 * @param reqCode
+	 *            - Request code for handling response
+	 * @param username
+	 *            - Ezetap username
+	 * @param externalReference
+	 *            - External reference 
+	 */
+	void getTransactionDetail(Activity context, int reqCode, String username, String externalReferences);
+	
 
 	/**
 	 * To get card info from a swiped card (protected API - Contact Ezetap for
@@ -683,5 +739,4 @@ public interface EzetapPayApi {
 	 *            
 	 */
 	void startCNPPayment(Activity context, int reqCode, String cnpURL,  String username, double amount, String orderNumber, String mobile, String emailID, String externalReference2, String externalReference3, Hashtable<String, Object> appData, Hashtable<String, Object> additionalData);
-
 }
