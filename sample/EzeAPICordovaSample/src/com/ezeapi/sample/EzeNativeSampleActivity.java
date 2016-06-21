@@ -1,19 +1,26 @@
 package com.ezeapi.sample;
 
+import java.io.ByteArrayOutputStream;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.eze.api.EzeAPI;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.eze.api.EzeAPI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class EzeNativeSampleActivity extends Activity implements
 		OnClickListener {
@@ -32,14 +39,16 @@ public class EzeNativeSampleActivity extends Activity implements
 	private final int REQUESTCODE_ATTACHSIGN = 10012;
 	private final int REQUESTCODE_UPDATE = 10013;
 	private final int REQUESTCODE_CLOSE = 10014;
+	private final int REQUESTCODE_GETTXNDETAIL = 10015;
+	private final int REQUESTCODE_GETINCOMPLETETXN = 10016;
 
 	private EditText txtRefNum, txtAmount, txtAmountCashback, txtName,
 			txtMobile, txtEmail, txtChqNum, txtBankCode, txtBankName,
 			txtBankACNum, txtChqDate;
 	private Button btnInit, btnPrep, btnWalletTxn, btnCardSale,
 			btnCardCashback, btnCardCashAtPOS, btnChqTxn, btnCash,
-			btnSearchTxn, btnVoidTxn, btnAttachSign, btnUpdate, btnClose;
-
+			btnSearchTxn, btnVoidTxn, btnAttachSign, btnUpdate, btnClose,btnCheckIncompleteTxn,btnGetTxnDetail;
+	private ImageView img;
 	private String strTxnId = null, emiID = null;
 	private String mandatoryErrMsg = "Please fill up mandatory params.";
 
@@ -86,6 +95,15 @@ public class EzeNativeSampleActivity extends Activity implements
 
 		btnClose = ((Button) findViewById(R.id.btnClose));
 		btnClose.setOnClickListener(this);
+		
+		btnGetTxnDetail = (Button) findViewById(R.id.btnGetTxnDetails);
+		btnGetTxnDetail.setOnClickListener(this);
+		
+		btnCheckIncompleteTxn = (Button) findViewById(R.id.btnCheckIncompleteTxn);
+		btnCheckIncompleteTxn.setOnClickListener(this);
+		
+		img = (ImageView) findViewById(R.id.imgSign);
+		img.buildDrawingCache();
 
 		txtRefNum = (EditText) findViewById(R.id.txtRefNum);
 		txtAmount = (EditText) findViewById(R.id.txtAmount);
@@ -139,35 +157,39 @@ public class EzeNativeSampleActivity extends Activity implements
 		case R.id.btnUpdate:
 			updateDevice();
 			break;
+		case R.id.btnCheckIncompleteTxn:
+			checkIncompleteTxn();
+			break;
+		case R.id.btnGetTxnDetails:
+			getTxnDetails();
+			break;
 		case R.id.btnClose:
 			closeEzetap();
 			break;
-
 		default:
 			break;
 		}
 	}
 
+	private void getTxnDetails() {
+		EzeAPI.getTransaction(this, REQUESTCODE_GETTXNDETAIL, txtRefNum.getText().toString().trim());
+	}
+
+	private void checkIncompleteTxn() {
+		EzeAPI.checkForIncompleteTransaction(this, REQUESTCODE_GETINCOMPLETETXN);
+	}
+
 	private void initEzetap() {
 		JSONObject jsonRequest = new JSONObject();
 		try {
-			jsonRequest.put("demoAppKey",
-					"Enter your demo app key");
-			jsonRequest.put("prodAppKey",
-					"Enter your prod app key");
-			jsonRequest.put("merchantName", "Demo");
-			jsonRequest.put("userName", "Demo user");
+			jsonRequest.put("demoAppKey","0b838d82-c666-45ed-909c-bc0fb9ed3ee2");
+			jsonRequest.put("prodAppKey","0b838d82-c666-45ed-909c-bc0fb9ed3ee2");
+			jsonRequest.put("merchantName", "Flipkart");
+			jsonRequest.put("userName", "1000000077");
 			jsonRequest.put("currencyCode", "INR");
 			jsonRequest.put("appMode", "DEMO");
-			jsonRequest.put("captureSignature", "false");
-			jsonRequest.put("prepareDevice", "true");// Set it true if you want
-														// to initialize and
-														// prepare device at a
-														// time
-														// or false if you want
-														// to initialize only
-														// and prepare device
-														// later for card txn.
+			jsonRequest.put("captureSignature", "true");
+			jsonRequest.put("prepareDevice", "false");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -195,6 +217,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
 
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
+				
 				// Building Optional params Object
 				jsonOptionalParams.put("references", jsonReferences);
 				jsonOptionalParams.put("customer", jsonCustomer);
@@ -231,6 +259,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				// Building References Object
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
+				
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
 
 				// Building Cheque Object
 				jsonCheque.put("chequeNumber", txtChqNum.getText().toString()
@@ -279,6 +313,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				// Building References Object
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
+				
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
 
 				// Building Optional params Object
 				jsonOptionalParams.put("amountCashback", 0.00);// Cannot have
@@ -322,6 +362,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
 
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
+
 				// Building Optional params Object
 				jsonOptionalParams.put("amountCashback", txtAmountCashback
 						.getText().toString().trim());
@@ -362,6 +408,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
 
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
+				
 				// Building Optional params Object
 				jsonOptionalParams.put("amountCashback", txtAmountCashback
 						.getText().toString().trim());
@@ -401,6 +453,12 @@ public class EzeNativeSampleActivity extends Activity implements
 				// Building References Object
 				jsonReferences.put("reference1", txtRefNum.getText().toString()
 						.trim());
+				
+				//Passing Additional References
+				JSONArray array = new JSONArray();
+				array.put("addRef_xx1");
+				array.put("addRef_xx2");
+				jsonReferences.put("additionalReferences",array);
 
 				// Building Optional params Object
 				jsonOptionalParams.put("amountCashback", 0.00);// Cannot have
@@ -447,45 +505,45 @@ public class EzeNativeSampleActivity extends Activity implements
 			displayToast("Inorrect txn Id, please make a Txn.");
 	}
 
+	public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(CompressFormat.JPEG, 70, stream);
+		byte[] byteFormat = stream.toByteArray();
+		String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+		return imgString;
+	}
+	
 	private void attachSignature() {
-		if (isTransactionIdValid()) {
-			JSONObject jsonRequest = new JSONObject();
-			JSONObject jsonImageObj = new JSONObject();
-			try {
-				// Building Image Object
-				jsonImageObj
-						.put("imageData",
-								"The Base64 Image bitmap string of your siganture goes here");// Cannot
-																								// have
-																								// amount
-																								// for
-																								// CASH@POS
-																								// transaction.
-				jsonImageObj.put("imageType", "JPEG");
-				jsonImageObj.put("height", "");// optional
-				jsonImageObj.put("weight", "");// optional
-
-				// Building final request object
-				jsonRequest.put("emiId", emiID);// pass this field if you have
-												// an
-												// email Id associated with the
-												// transaction
-				jsonRequest.put("tipAmount", 0.00);// optional
-				// jsonRequest.put("image", jsonImageObj); // Pass this
-				// attribute when you have a valid captured signature
-				jsonRequest.put("txnId", strTxnId);
-
+		String txnId = null;//pass your value here
+		JSONObject jsonRequest = new JSONObject();
+		JSONObject jsonImageObj = new JSONObject();
+		try {
+			img.buildDrawingCache();
+			Bitmap bmap = img.getDrawingCache();
+			String encodedImageData =getEncoded64ImageStringFromBitmap(bmap);
+			// Building Image Object
+			jsonImageObj.put("imageData",encodedImageData);
+			jsonImageObj.put("imageType", "JPEG");
+			jsonImageObj.put("height", "");// optional
+			jsonImageObj.put("weight", "");// optional
+			// Building final request object
+			jsonRequest.put("emiId", emiID);// pass this field if you have an EMI Id associated with the transaction
+			jsonRequest.put("tipAmount", 0.00);// optional
+			jsonRequest.put("image", jsonImageObj); // Pass this attribute when you have a valid captured signature image
+			jsonRequest.put("txnId", txnId);
+			if (!txnId.equals(null)) {
 				EzeAPI.attachSignature(this, REQUESTCODE_ATTACHSIGN,
 						jsonRequest);
-			} catch (JSONException e) {
-				e.printStackTrace();
+			}else{
+				displayToast("Inorrect txn Id, please pass txnId");
 			}
-		} else
-			displayToast("Inorrect txn Id, please make a Txn.");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void updateDevice() {
-		EzeAPI.updateDevice(this, REQUESTCODE_UPDATE);
+		EzeAPI.checkForUpdates(this, REQUESTCODE_UPDATE);
 	}
 
 	private void closeEzetap() {
@@ -528,9 +586,11 @@ public class EzeNativeSampleActivity extends Activity implements
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if (intent != null && intent.hasExtra("response"))
+		if (intent != null && intent.hasExtra("response")) {
 			Toast.makeText(this, intent.getStringExtra("response"),
 					Toast.LENGTH_SHORT).show();
+			Log.i("SampleAppLogs",intent.getStringExtra("response"));
+		}
 		switch (requestCode) {
 		case REQUESTCODE_CASH:
 		case REQUESTCODE_CASHBACK:
