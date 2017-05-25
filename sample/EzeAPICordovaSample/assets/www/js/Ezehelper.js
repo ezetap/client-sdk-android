@@ -37,19 +37,14 @@ initBtn.onclick = function(){
 		$("#messageDesc").text("Tap here to do another transaction.\n\n"+JSON.stringify(response));			
 	};
 	var EzetapConfig = {
-			"demoAppKey":"Enter your demo app key",
-			"prodAppKey":"Enter your prod app key",
-			"merchantName":"Merchant name",// The name of your organization
-			"userName":"User name",// Name of the user or agent
-			"currencyCode":"INR",// Defaulted to INR. Set to appropriate
-									// currency code your application uses.
-			"appMode":"DEMO",// Accepts the value DEMO, PROD and PREPROD
-			"captureSignature":"false",// Set it to TRUE if you wish Ezetap to
-										// capture signature
-			"prepareDevice": "false",// Set it true if you want to initialize
-										// and prepare device at a time
-			                        // or false if you want to initialize only
-									// and prepare device later for card txn.
+		   "demoAppKey": "your demo app key", 
+		   "prodAppKey": "your prod app key", 
+		   "merchantName": "your merchant name", 
+		   "userName": "your user name", 
+		   "currencyCode": "INR", 
+		   "appMode": "DEMO/PROD",
+		   "captureSignature": "true/false",  
+		   "prepareDevice": "true/false"
 	};
 	cordova.exec(ezeTapSuccessCallBack,ezeTapFailureCallBack,"EzeAPIPlugin","initialize",
 			[EzetapConfig]);
