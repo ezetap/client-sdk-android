@@ -56,7 +56,7 @@ There is a sample Android App inside the sample folder of the repository. You ca
         </provider>
 ```
 
-2. Create a file with name provider_paths.xml in your in your Project > res > xml > folder and paste the below code-
+2. Create a file with name provider_paths.xml in your Project > res > xml > folder and paste the below code-
 ```xml
 	<?xml version="1.0" encoding="utf-8"?>
 	<paths xmlns:android="http://schemas.android.com/apk/res/android" >
@@ -96,3 +96,4 @@ There is a sample Android App inside the sample folder of the repository. You ca
 ## Steps to follow-
 * You can find the documentation on how to create a Cordova plugin for Android <a href="https://github.com/ezetap/client-sdk-android/tree/master/docs">here</a>.
 
+>Note Refer Ezetap Cordova Integration.pdf for Android Nougat support changes which are highlighted in orange.
