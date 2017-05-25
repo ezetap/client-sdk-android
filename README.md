@@ -41,7 +41,7 @@ There is a sample Android App inside the sample folder of the repository. You ca
 	        android:screenOrientation="portrait"
 	        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 ```
-* If you intend to support Android Nougat API Level 24 & above follow the below 2 steps - 
+* If you intend to support Android Nougat API Level 24 & above, follow the below 2 steps - 
 
 1. Add the below provider in your Application's manifest file inside application tag-
 ```xml
