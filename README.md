@@ -43,17 +43,20 @@ There is a sample Android App inside the sample folder of the repository. You ca
 ```
 * If you intend to support Android Nougat API Level 24 & above, follow the below 2 steps - 
 
-1. Add the below provider in your Application's manifest file inside application tag-
+1. Add the below provider in your project's manifest file inside application tag & replace your application ID in the place of <Your application ID>. Your app ID/package name can be found in your app's manifest file under package tag or in the applicationId tag of your gradle file.
+
 ```xml
+
 	<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ezetap.sdk.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true" >
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+		android:name="com.ezetap.sdk.EzetapFileProvider"
+		android:authorities="<Your application ID>.EzetapFileProvider"
+		android:exported="false"
+		android:grantUriPermissions="true" >
+		<meta-data
+			android:name="android.support.FILE_PROVIDER_PATHS"
+			android:resource="@xml/provider_paths" />
+	</provider>
+
 ```
 
 2. Create a file with name provider_paths.xml in your Project > res > xml > folder and paste the below code-

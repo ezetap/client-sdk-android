@@ -59,9 +59,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 
+        <!-- android:authorities="<enter your Application package name>.EzetapFileProvider" -->
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ezetap.sdk.fileprovider"
+            android:name="com.ezetap.sdk.EzetapFileProvider"
+            android:authorities="com.ezeapi.sample.EzetapFileProvider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data

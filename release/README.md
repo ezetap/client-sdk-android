@@ -63,6 +63,10 @@ This version of the SDK adds the below features-
 
 Brings Android Nougat support. Please read out the steps to integrate carefully. 
 
+## Version 1.0.12
+
+Added a new file provider which will be exclusive for Ezetap Android SDK.
+
 ### How to upgrade:
 IMPORTANT- If your project's targetSdkVersion is higher or equal to 23(Android 6.0 Marshmallow) please add Android support library v4 to your Android project from <a href="http://developer.android.com/tools/support-library/setup.html">here.</a> The Android support libraries are not required if your project's targetSdkVersion is lesser than 23.
 
