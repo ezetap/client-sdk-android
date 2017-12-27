@@ -599,45 +599,55 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 						JSONObject jsonOptionalParams = new JSONObject();
 						JSONObject jsonReferences = new JSONObject();
 						JSONObject jsonCustomer = new JSONObject();
-						// Building Customer Object
+						
+						//Amount (mandatory)
+						jsonRequest.put("amount", payableAmountEditText.getText().toString().trim());
+						
+						// Building Customer Object(Optional) 
 						jsonCustomer.put("name", customerNameEditText.getText().toString().trim());
 						jsonCustomer.put("mobileNo", mobileNumberEditText.getText().toString().trim());
 						jsonCustomer.put("email", emailIdEditText.getText().toString().trim());
+						jsonOptionalParams.put("customer", jsonCustomer);
 
-						// Building References Object
+						// Building References Object(Optional) 
+						// Additionally reference2 and reference3 can be used as well
 						jsonReferences.put("reference1", orderNumberEditText.getText().toString().trim());
 
-						// Passing Additional References
+						// Passing Additional References(Optional) 
+						// If reference1, reference2 & reference3 is insufficient then additionalReferences array can be used
 						JSONArray array = new JSONArray();
 						array.put("addRef_xx1");
 						array.put("addRef_xx2");
 						jsonReferences.put("additionalReferences", array);
-
-						// Building Optional params Object
-						jsonOptionalParams.put("amountCashback", cashBackAmountEditText.getText().toString() + "");// Cannot
-						// have
-						// amount cashback in SALE transaction.
-						jsonOptionalParams.put("amountTip", 0.00);
+						
 						jsonOptionalParams.put("references", jsonReferences);
-						jsonOptionalParams.put("customer", jsonCustomer);
 
-						// Pay to Account
-						jsonOptionalParams.put("payToAccount", "12322");
+						// Building Optional params Object(Optional) 
+						//jsonOptionalParams.put("amountCashback", cashBackAmountEditText.getText().toString() + "");// Cannot
+						
+						// Tip (Optional)
+						//jsonOptionalParams.put("amountTip", 0.00);
 
+						// Pay to Account(Optional) - Used for Multi TID payments
+						//jsonOptionalParams.put("payToAccount", "12322");
+
+						//Additional Data(Optional) - Used to send any additional info
+						//Rarely used and limited for Ezetap's internal use
 						JSONObject addlData = new JSONObject();
 						addlData.put("addl1", "addl1");
 						addlData.put("addl2", "addl2");
 						addlData.put("addl3", "addl3");
-						jsonOptionalParams.put("addlData", addlData);
-
+						//jsonOptionalParams.put("addlData", addlData);
+						
+						//Application Data(Optional) - Used to send any app info
+						//Rarely used and limited for Ezetap's internal use
 						JSONObject appData = new JSONObject();
 						appData.put("app1", "app1");
 						appData.put("app2", "app2");
 						appData.put("app3", "app3");
-						jsonOptionalParams.put("appData", appData);
+						//jsonOptionalParams.put("appData", appData);
 
-						// Building final request object
-						jsonRequest.put("amount", payableAmountEditText.getText().toString().trim());
+						// Building final optional params
 						jsonRequest.put("options", jsonOptionalParams);
 
 						InputMethodManager imm = (InputMethodManager) EzeNativeSampleActivity.this
@@ -662,15 +672,15 @@ public class EzeNativeSampleActivity extends Activity implements OnClickListener
 							doChequeTxn(jsonRequest);
 							break;
 						case REQUEST_CODE_SALE_TXN:
-							jsonRequest.put("mode", "SALE");//Card payment Mode
+							jsonRequest.put("mode", "SALE");//Card payment Mode(mandatory)
 							doSaleTxn(jsonRequest);
 							break;
 						case REQUEST_CODE_CASH_BACK_TXN:
-							jsonRequest.put("mode", "CASHBACK");//Card payment Mode
+							jsonRequest.put("mode", "CASHBACK");//Card payment Mode(mandatory)
 							doCashbackTxn(jsonRequest);
 							break;
 						case REQUEST_CODE_CASH_AT_POS_TXN:
-							jsonRequest.put("mode", "CASH@POS");//Card payment Mode
+							jsonRequest.put("mode", "CASH@POS");//Card payment Mode(mandatory)
 							doCashAtPosTxn(jsonRequest);
 							break;
 						case REQUEST_CODE_CASH_TXN:
