@@ -38,7 +38,6 @@ There is a sample Android App inside the sample folder of the repository. You ca
 ```xml
 		<activity android:name="com.eze.api.EzeAPIActivity"
 	        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-	        android:screenOrientation="portrait"
 	        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 ```
 * If you intend to support Android Nougat API Level 24 & above, follow the below 2 steps - 
