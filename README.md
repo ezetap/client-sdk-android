@@ -58,17 +58,17 @@ There is a sample Android App inside the sample folder of the repository. You ca
 
 ```
 
-2. Create a file with name provider_paths.xml in your Project > res > xml > folder and paste the below code-
+2. Create a file with name provider_paths.xml in your Project > res > xml folder and paste the below code-
 ```xml
 	<?xml version="1.0" encoding="utf-8"?>
 	<paths xmlns:android="http://schemas.android.com/apk/res/android" >
-		<files-path name="ezetap-download" />
-		<external-path name="ezetap-download" />
+		<files-path name="ezetap-download" path ="your-local-file-path"/>
+		<external-path name="ezetap-download" path ="your-local-file-path"/>
 	</paths>
 ```
 
 * IMPORTANT- If your project's targetSdkVersion is higher or equal to 23(Android 6.0 Marshmallow) please add Android support library v4 to your Android project from <a href="http://developer.android.com/tools/support-library/setup.html">here.</a> The Android support libraries are not required if your project's targetSdkVersion is lesser than 23.
-* Good to go, please refer <a href="http://developers.ezetap.com/api/"> Ezetap API Portal</a> for API usage
+* Good to go, please refer <a href="https://sandbox.ezetap.com/static/index.html#sdk-integration"> Ezetap API Portal</a> for API usage
 
 >Note- The EzeAPIActivity has to be configured with the same attributes as given above.
 
